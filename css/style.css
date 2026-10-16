@@ -958,3 +958,147 @@ a:hover {
     bottom: 12px;
   }
 }
+
+/* ------------------------------------------------------------
+   CHARACTER EXPLORER (SWAPI data layer)
+   Minimal, scoped additions: async states + cards + dark modal.
+   Every colour maps to an existing design token.
+   ------------------------------------------------------------ */
+.loading,
+.error-msg,
+.mensaje-info {
+  margin: 0;
+  padding: 16px;
+  border-radius: var(--sw-radius);
+  text-align: center;
+  font-size: 15px;
+  font-weight: 600;
+}
+
+/* Async messages are injected as direct children of the CSS grid,
+   so they must span the full row instead of one column. */
+.sw-card-grid > .loading,
+.sw-card-grid > .error-msg,
+.sw-card-grid > .mensaje-info {
+  grid-column: 1 / -1;
+}
+
+.loading {
+  border: 1px dashed var(--sw-border);
+  background: var(--sw-panel-2);
+  color: var(--sw-muted);
+}
+
+.mensaje-info {
+  border: 1px dashed var(--sw-border);
+  background: var(--sw-panel-2);
+  color: var(--sw-muted);
+}
+
+.error-msg {
+  background: var(--sw-panel-2);
+  color: var(--sw-text);
+}
+
+.error-msg::before {
+  content: "Aviso: ";
+  color: var(--sw-red);
+  font-weight: 700;
+}
+
+.error-msg--action {
+  padding-top: 0;
+}
+
+.error-msg--action::before {
+  content: none;
+}
+
+.personaje-card {
+  gap: 10px;
+}
+
+.personaje-card-avatar {
+  display: flex;
+  justify-content: center;
+}
+
+.sw-avatar {
+  display: block;
+  border-radius: 50%;
+  border: 2px solid var(--sw-border);
+}
+
+.sw-badge-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 12px;
+}
+
+.personaje-card .ver-detalles {
+  margin-top: auto;
+  align-self: flex-start;
+}
+
+.results-count {
+  margin: 0 0 16px;
+  color: var(--sw-muted);
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.api-info {
+  margin-top: 32px;
+}
+
+/* Dark theme for the Bootstrap detail modal so text stays readable. */
+#modal-personaje .modal-content {
+  background: var(--sw-panel);
+  border: 1px solid var(--sw-border);
+  color: var(--sw-text);
+}
+
+#modal-personaje .modal-header {
+  border-bottom: 1px solid var(--sw-border);
+}
+
+#modal-personaje .modal-title {
+  color: var(--sw-gold);
+}
+
+#modal-personaje .btn-close {
+  filter: invert(1) grayscale(1) brightness(1.7);
+}
+
+.modal-detalle-cabecera {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.modal-detalle-cabecera .card-title {
+  margin-bottom: 0;
+}
+
+.modal-detail-list {
+  margin: 0;
+  padding-left: 20px;
+  color: var(--sw-text);
+  font-size: 14px;
+}
+
+.modal-subtitle {
+  margin: 16px 0 8px;
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--sw-text);
+}
+
+.modal-film-list {
+  margin: 0;
+  padding-left: 20px;
+  color: var(--sw-muted);
+  font-size: 14px;
+}
