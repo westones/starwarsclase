@@ -1296,3 +1296,226 @@ a:hover {
     display: none;
   }
 }
+
+/* ------------------------------------------------------------
+   HISTORIA PAGE — intro split + curiosities definition list.
+   Scoped additions; colours map to existing design tokens.
+   ------------------------------------------------------------ */
+.intro-split {
+  display: flex;
+  align-items: flex-start;
+  gap: 24px;
+  margin-bottom: 8px;
+}
+
+.intro-split-text {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.intro-split-media {
+  width: 260px;
+  height: 190px;
+  flex-shrink: 0;
+  border: 1px solid var(--sw-border);
+  border-radius: var(--sw-radius);
+  background: var(--sw-panel-2);
+  object-fit: cover;
+}
+
+.curiosidades,
+.sw-dl {
+  margin: 0;
+  display: grid;
+  gap: 14px;
+}
+
+.curiosidades dt,
+.sw-dl dt {
+  color: var(--sw-gold);
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.curiosidades dd,
+.sw-dl dd {
+  margin: 4px 0 0;
+  color: var(--sw-muted);
+  font-size: 14px;
+}
+
+/* ------------------------------------------------------------
+   STORYBOARD PAGE — accessible dark-theme data table + figure.
+   ------------------------------------------------------------ */
+.sw-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 8px;
+}
+
+.sw-table caption {
+  margin-bottom: 10px;
+  color: var(--sw-muted);
+  font-size: 14px;
+  text-align: left;
+}
+
+.sw-table th,
+.sw-table td {
+  padding: 10px 12px;
+  border: 1px solid var(--sw-border);
+  text-align: left;
+  vertical-align: top;
+  font-size: 14px;
+}
+
+.sw-table th {
+  background: var(--sw-panel-2);
+  color: var(--sw-gold);
+}
+
+.sw-table td {
+  color: var(--sw-text);
+}
+
+.storyboard-figure {
+  margin: 0 0 16px;
+  padding: 16px;
+  border: 1px solid var(--sw-border);
+  border-radius: var(--sw-radius);
+  background: var(--sw-panel-2);
+  overflow-x: auto;
+}
+
+.storyboard-figure figcaption {
+  margin-top: 12px;
+  color: var(--sw-muted);
+  font-size: 14px;
+}
+
+.storyboard-svg {
+  display: block;
+  width: 100%;
+  min-width: 680px;
+  height: auto;
+}
+
+/* ------------------------------------------------------------
+   PRESENTACION PAGE — accessible slide deck.
+   ------------------------------------------------------------ */
+.deck {
+  margin: 0;
+}
+
+.slide {
+  min-height: 320px;
+  padding: 24px;
+  border: 1px solid var(--sw-border);
+  border-radius: var(--sw-radius);
+  background: var(--sw-panel-2);
+}
+
+.slide[hidden] {
+  display: none;
+}
+
+.slide-title {
+  margin: 0 0 12px;
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--sw-gold);
+}
+
+.slide-list {
+  margin: 0;
+  padding-left: 22px;
+  color: var(--sw-text);
+  font-size: 16px;
+}
+
+.slide-list li {
+  margin-bottom: 8px;
+}
+
+.deck-controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 16px;
+  padding: 12px 16px;
+  border: 1px solid var(--sw-border);
+  border-radius: var(--sw-radius);
+  background: var(--sw-panel);
+}
+
+.deck-counter {
+  margin: 0;
+  color: var(--sw-text);
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.deck-buttons {
+  display: flex;
+  gap: 8px;
+}
+
+.sw-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+@media (max-width: 560px) {
+  .intro-split {
+    flex-direction: column;
+  }
+
+  .intro-split-media {
+    width: 100%;
+  }
+
+  .deck-controls {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .deck-buttons {
+    justify-content: space-between;
+  }
+}
+
+/* ------------------------------------------------------------
+   ENLACES PAGE — link body wrapper + wordmark badges.
+   The badges are 160x48 in the source, so they need their own
+   size instead of the default 48x48 .link-logo box.
+   ------------------------------------------------------------ */
+.link-body {
+  min-width: 0;
+}
+
+.link-logo--wordmark {
+  width: 160px;
+  height: 48px;
+}
+
+/* Self-declared WCAG 2.1 AA badge (Accesibilidad page). */
+.certificado-wai {
+  display: block;
+  width: 320px;
+  max-width: 100%;
+  height: auto;
+  margin-bottom: 12px;
+}
+
+@media (max-width: 560px) {
+  .link-card {
+    flex-direction: column;
+  }
+
+  .link-logo--wordmark {
+    width: 100%;
+    max-width: 200px;
+  }
+}

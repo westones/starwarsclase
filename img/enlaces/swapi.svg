@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="160" height="48" viewBox="0 0 160 48" role="img" aria-label="Distintivo de la API SWAPI">
+  <title>Distintivo de la API SWAPI</title>
+  <rect x="1" y="1" width="158" height="46" rx="8" fill="#0e1524" stroke="#2b3a5c" stroke-width="1"/>
+  <path d="M18 15l1.8 4.2 4.2 1.8-4.2 1.8L18 27l-1.8-4.2L12 21l4.2-1.8z" fill="#ff9f45"/>
+  <text x="32" y="28" font-family="Segoe UI, Arial, sans-serif" font-size="15" font-weight="700" fill="#e9eef7">SWAPI</text>
+</svg>

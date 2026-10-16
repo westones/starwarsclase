@@ -1,0 +1,384 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Galaxia Star Wars | Presentación</title>
+    <meta
+      name="description"
+      content="Presentación accesible de diez diapositivas sobre el proyecto Galaxia Star Wars: objetivos, arquitectura, diseño, multimedia y accesibilidad."
+    />
+    <meta name="theme-color" content="#05070d" />
+    <link rel="icon" href="img/favicon.svg" type="image/svg+xml" />
+
+    <!-- Load order: Bootstrap base, then Tailwind (preflight disabled), then the theme. -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" />
+    <script src="https://cdn.tailwindcss.com/3.4.16"></script>
+    <script>
+      tailwind.config = { corePlugins: { preflight: false } };
+    </script>
+    <link rel="stylesheet" href="css/style.css" />
+  </head>
+  <body class="page">
+    <a class="skip-link" href="#contenido-principal">Saltar al contenido principal</a>
+
+    <audio id="musica-fondo" loop preload="none" aria-label="Música ambiental de la galaxia">
+      <source src="audio/ambient.mp3" type="audio/mpeg" />
+      Tu navegador no soporta audio.
+    </audio>
+
+    <!-- Header -->
+    <header class="sw-header" role="banner">
+      <div class="sw-header-container">
+        <div class="brand">
+          <svg class="brand-emblem" viewBox="0 0 64 64" aria-hidden="true" focusable="false">
+            <circle cx="32" cy="32" r="29" fill="#0e1524" stroke="#ffe81f" stroke-width="2" />
+            <path
+              d="M32 7l5 16 16 5-16 5-5 16-5-16-16-5 16-5z"
+              fill="#ffe81f"
+            />
+            <circle cx="32" cy="28" r="3.4" fill="#05070d" />
+          </svg>
+          <div>
+            <span class="brand-name">Galaxia Star Wars</span>
+            <span class="brand-subtitle">Archivo galáctico</span>
+          </div>
+        </div>
+        <button id="music-button" class="sw-btn ghost" type="button" aria-pressed="false">
+          Encender música
+        </button>
+      </div>
+    </header>
+
+    <!-- Page shell: nav | content | widgets -->
+    <div class="page-layout">
+      <!-- Left sidebar -->
+      <aside class="left-sidebar" aria-label="Navegación principal">
+        <div class="navigation-panel">
+          <h2 class="panel-title">Navegación</h2>
+          <nav class="side-nav" aria-label="Secciones del sitio">
+            <a href="index.html">
+              <svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                <path d="M3 9.5 12 3l9 6.5V20a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z" />
+              </svg>
+              Inicio
+            </a>
+            <a href="personajes.html">
+              <svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                <circle cx="9" cy="8" r="3.2" />
+                <path d="M3 20a6 6 0 0 1 12 0" />
+                <path d="M16 11a3 3 0 0 0 0-6" />
+                <path d="M21 20a6 6 0 0 0-5-5.9" />
+              </svg>
+              Personajes
+            </a>
+            <a href="facciones.html">
+              <svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                <path d="M12 3l8 3v6c0 5-3.4 8-8 9-4.6-1-8-4-8-9V6z" />
+              </svg>
+              Facciones
+            </a>
+            <a href="historia.html">
+              <svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                <circle cx="12" cy="12" r="9" />
+                <path d="M12 7v5.2l3.4 2" />
+              </svg>
+              Historia
+            </a>
+            <a href="enlaces.html">
+              <svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71" />
+                <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71" />
+              </svg>
+              Enlaces
+            </a>
+            <a href="accesibilidad.html">
+              <svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                <circle cx="12" cy="5" r="2" />
+                <path d="M12 8v6" />
+                <path d="M5 10l7 1 7-1" />
+                <path d="M12 14l-3 7" />
+                <path d="M12 14l3 7" />
+              </svg>
+              Accesibilidad
+            </a>
+          </nav>
+        </div>
+      </aside>
+
+      <!-- Main content -->
+      <main class="main-content" id="contenido-principal" tabindex="-1">
+        <section class="content-panel" aria-labelledby="titulo-presentacion">
+          <p class="panel-title">Contenido principal</p>
+
+          <h1 class="page-title page-title--underline" id="titulo-presentacion">
+            Presentación del proyecto
+          </h1>
+          <p class="page-intro">
+            Un resumen del proyecto en diez diapositivas. Usa los botones «Anterior» y
+            «Siguiente» o las teclas de flecha (izquierda y derecha), Inicio y Fin para moverte
+            por el mazo.
+          </p>
+
+          <div class="deck" id="mazo">
+            <!-- Slide 1 -->
+            <section
+              class="slide"
+              role="group"
+              aria-roledescription="diapositiva"
+              aria-label="Diapositiva 1 de 10"
+            >
+              <h2 class="slide-title">Star Wars Universe — Proyecto de interfaz web</h2>
+              <ul class="slide-list">
+                <li>Integrantes: [Nombre 1] y [Nombre 2] (pendiente de completar).</li>
+                <li>Asignatura: Diseño de Interfaz Gráfica Web.</li>
+                <li>Curso: 2026.</li>
+                <li>Sitio estático, accesible y sin backend.</li>
+              </ul>
+            </section>
+
+            <!-- Slide 2 -->
+            <section
+              class="slide"
+              role="group"
+              aria-roledescription="diapositiva"
+              aria-label="Diapositiva 2 de 10"
+            >
+              <h2 class="slide-title">Objetivo y especificaciones de partida</h2>
+              <ul class="slide-list">
+                <li>Objetivo: adaptar un proyecto de clase previo a una web temática de Star Wars.</li>
+                <li>Requisitos de partida: Bootstrap, Tailwind, jQuery o React, canvas, multimedia y accesibilidad.</li>
+                <li>Restricción: sitio estático que funcione desde CDN y desde <code>file://</code>.</li>
+                <li>Meta de accesibilidad: WCAG 2.1 nivel AA.</li>
+              </ul>
+            </section>
+
+            <!-- Slide 3 -->
+            <section
+              class="slide"
+              role="group"
+              aria-roledescription="diapositiva"
+              aria-label="Diapositiva 3 de 10"
+            >
+              <h2 class="slide-title">Storyboard y flujo de usuario</h2>
+              <ul class="slide-list">
+                <li>El recorrido parte de Inicio y da acceso a cinco secciones.</li>
+                <li>Cabecera, navegación, lector de voz y pie de página son elementos globales.</li>
+                <li>Documentado en la página Storyboard con diagramas SVG accesibles.</li>
+                <li>En pantallas pequeñas la rejilla pasa a una sola columna.</li>
+              </ul>
+            </section>
+
+            <!-- Slide 4 -->
+            <section
+              class="slide"
+              role="group"
+              aria-roledescription="diapositiva"
+              aria-label="Diapositiva 4 de 10"
+            >
+              <h2 class="slide-title">Arquitectura técnica</h2>
+              <ul class="slide-list">
+                <li>HTML5 semántico con puntos de referencia.</li>
+                <li>Bootstrap 5 para la rejilla y los componentes.</li>
+                <li>Tailwind como capa de utilidades (preflight desactivado).</li>
+                <li>jQuery para las interacciones del sitio.</li>
+                <li>Sin paso de compilación: todo por CDN y archivos estáticos.</li>
+              </ul>
+            </section>
+
+            <!-- Slide 5 -->
+            <section
+              class="slide"
+              role="group"
+              aria-roledescription="diapositiva"
+              aria-label="Diapositiva 5 de 10"
+            >
+              <h2 class="slide-title">Diseño visual: paleta y contraste</h2>
+              <ul class="slide-list">
+                <li>Paleta oscura con acento dorado (#ffe81f) y azul (#5aa9e6).</li>
+                <li>Contraste alto comprobado sobre el fondo oscuro.</li>
+                <li>Modo oscuro temático permanente, coherente con la saga.</li>
+                <li>Tipografía de sistema para máxima compatibilidad.</li>
+              </ul>
+            </section>
+
+            <!-- Slide 6 -->
+            <section
+              class="slide"
+              role="group"
+              aria-roledescription="diapositiva"
+              aria-label="Diapositiva 6 de 10"
+            >
+              <h2 class="slide-title">Multimedia</h2>
+              <ul class="slide-list">
+                <li>Ilustraciones y emblemas vectoriales originales.</li>
+                <li>Audio ambiental sintetizado para el proyecto.</li>
+                <li>Vídeo propio con subtítulos y transcripción.</li>
+                <li>Campo de estrellas animado con <code>&lt;canvas&gt;</code>.</li>
+              </ul>
+            </section>
+
+            <!-- Slide 7 -->
+            <section
+              class="slide"
+              role="group"
+              aria-roledescription="diapositiva"
+              aria-label="Diapositiva 7 de 10"
+            >
+              <h2 class="slide-title">Elementos interactivos (jQuery)</h2>
+              <ul class="slide-list">
+                <li>Buscador en vivo y modal de detalle en Personajes.</li>
+                <li>Selector de sable de luz con acento persistente.</li>
+                <li>Botón de hiperespacio y animación de estrellas.</li>
+                <li>Volver arriba, música ambiental y filtros de facciones.</li>
+              </ul>
+            </section>
+
+            <!-- Slide 8 -->
+            <section
+              class="slide"
+              role="group"
+              aria-roledescription="diapositiva"
+              aria-label="Diapositiva 8 de 10"
+            >
+              <h2 class="slide-title">Accesibilidad</h2>
+              <ul class="slide-list">
+                <li>Lector de voz integrado con la Web Speech API.</li>
+                <li>Texto alternativo en todas las imágenes y diagramas.</li>
+                <li>Navegación completa por teclado y foco siempre visible.</li>
+                <li>Enlace de salto y regiones <code>aria-live</code>.</li>
+              </ul>
+            </section>
+
+            <!-- Slide 9 -->
+            <section
+              class="slide"
+              role="group"
+              aria-roledescription="diapositiva"
+              aria-label="Diapositiva 9 de 10"
+            >
+              <h2 class="slide-title">Auditoría de accesibilidad</h2>
+              <ul class="slide-list">
+                <li>Herramienta principal: pa11y con el estándar WCAG2AA.</li>
+                <li>Apoyo de axe y del análisis de Lighthouse.</li>
+                <li>Resultados antes y después recogidos en la carpeta <code>docs/</code>.</li>
+                <li>Correcciones de estructura, contraste, texto alternativo y roles.</li>
+                <li>Revisión manual y pruebas con el lector de voz.</li>
+              </ul>
+            </section>
+
+            <!-- Slide 10 -->
+            <section
+              class="slide"
+              role="group"
+              aria-roledescription="diapositiva"
+              aria-label="Diapositiva 10 de 10"
+            >
+              <h2 class="slide-title">Licencia, certificación WAI-AA y conclusiones</h2>
+              <ul class="slide-list">
+                <li>Código publicado bajo GNU GPL v3.0, con el aviso en <code>NOTICE</code>.</li>
+                <li>Conformidad declarada con WCAG 2.1 AA (autoevaluación).</li>
+                <li>Recursos originales: sin arte ni audio de terceros.</li>
+                <li>Conclusión: proyecto estático, accesible y reutilizable.</li>
+              </ul>
+            </section>
+          </div>
+
+          <div class="deck-controls" role="group" aria-label="Controles de la presentación">
+            <p class="deck-counter">
+              <span id="deck-actual">1</span> / <span id="deck-total">10</span>
+            </p>
+            <div class="deck-buttons">
+              <button
+                id="deck-prev"
+                class="sw-btn ghost"
+                type="button"
+                aria-controls="mazo"
+              >
+                Anterior
+              </button>
+              <button
+                id="deck-next"
+                class="sw-btn primary"
+                type="button"
+                aria-controls="mazo"
+              >
+                Siguiente
+              </button>
+            </div>
+          </div>
+          <p id="deck-anuncio" class="visually-hidden" role="status" aria-live="polite"></p>
+        </section>
+      </main>
+
+      <!-- Right sidebar -->
+      <aside class="right-sidebar" aria-label="Panel lateral">
+        <div class="sidebar-panel">
+          <h2 class="panel-title">Personaje del día</h2>
+          <div class="personaje-dia" id="personaje-dia">
+            <div class="img-placeholder personaje-dia-image">
+              <span>Imagen</span>
+            </div>
+            <p class="personaje-dia-number">#???</p>
+            <p class="personaje-dia-name">¿Quién será hoy?</p>
+          </div>
+        </div>
+
+        <div class="fact-box">
+          <p class="fact-title">Dato galáctico</p>
+          <p class="fact-text">
+            La Vía Láctea que conocemos está inspirada en una galaxia espiral, igual que
+            muchas de las que aparecen en la saga.
+          </p>
+        </div>
+
+        <div class="sidebar-panel">
+          <h2 class="panel-title">Enlaces rápidos</h2>
+          <ul class="quick-links">
+            <li><a href="personajes.html">Personajes destacados</a></li>
+            <li><a href="facciones.html">Comparar facciones</a></li>
+            <li><a href="historia.html">Línea temporal</a></li>
+            <li><a href="accesibilidad.html">Declaración de accesibilidad</a></li>
+          </ul>
+        </div>
+      </aside>
+    </div>
+
+    <!-- Read speaker -->
+    <div class="read-speaker-bar" role="group" aria-label="Controles de lectura en voz alta">
+      <button id="btn-leer" class="sw-btn read-speaker" type="button" aria-pressed="false">
+        Leer página
+      </button>
+      <button id="btn-detener-lectura" class="sw-btn ghost" type="button">Detener</button>
+    </div>
+
+    <!-- Footer -->
+    <footer class="sw-footer" role="contentinfo">
+      <div class="sw-footer-container">
+        <p class="footer-copy">
+          © 2026 Equipo Galaxia · Proyecto de clase sin ánimo de lucro
+        </p>
+        <ul class="footer-links">
+          <li><a href="accesibilidad.html">Accesibilidad</a></li>
+          <li><a href="LICENSE">Licencia GNU GPL v3.0</a></li>
+        </ul>
+        <p class="footer-note">
+          Star Wars y todos los nombres y personajes relacionados son marcas registradas de
+          Disney/Lucasfilm. Este sitio es un trabajo educativo sin ánimo de lucro y no está
+          afiliado ni respaldado por Disney/Lucasfilm.
+        </p>
+        <p class="footer-note">Código bajo licencia GNU GPL v3.0.</p>
+      </div>
+    </footer>
+
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="js/api.js"></script>
+    <script src="js/dom.js"></script>
+    <script src="js/script.js"></script>
+    <script src="js/canvas.js"></script>
+    <script src="js/lector.js"></script>
+    <script src="js/navegacion.js"></script>
+    <script src="js/presentacion.js"></script>
+  </body>
+</html>
