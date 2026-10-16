@@ -142,7 +142,9 @@ a:hover {
 .sw-header {
   position: relative;
   z-index: 10;
-  background: linear-gradient(180deg, #0b1220, var(--sw-black));
+  /* Solid fill instead of a gradient so automated contrast tools can
+     evaluate the brand text and the music button (WCAG 2.1 AA). */
+  background: #0b1220;
   border-bottom: 2px solid var(--sw-border);
 }
 
@@ -309,6 +311,32 @@ a:hover {
 .section-actions {
   margin: 20px 0 0;
   text-align: center;
+}
+
+/* Inline code. Bootstrap defaults `code` to #d63384, which only reaches
+   3.58:1-4.05:1 on the dark panels. The Rebel blue reaches 7.17:1 on
+   --sw-panel and 6.34:1 on --sw-panel-2, both >= 4.5:1 (WCAG 2.1 AA). */
+code,
+kbd,
+samp {
+  color: var(--sw-blue);
+  background: rgba(90, 169, 230, 0.12);
+  padding: 0.1em 0.35em;
+  border-radius: 4px;
+}
+
+/* Links inside running text must be distinguishable without colour.
+   Scoped so buttons (.sw-btn) and the stretched card/link-card titles
+   (.link-name a) keep the current design. */
+.content-panel p a:not(.sw-btn),
+.content-panel li a:not(.sw-btn),
+.content-panel td a:not(.sw-btn),
+.content-panel dd a:not(.sw-btn),
+.content-panel figcaption a:not(.sw-btn),
+.content-panel details a:not(.sw-btn),
+.content-panel video a:not(.sw-btn) {
+  text-decoration: underline;
+  text-underline-offset: 2px;
 }
 
 /* ------------------------------------------------------------
@@ -848,6 +876,13 @@ a:hover {
 
 .footer-links a:hover {
   color: var(--sw-gold);
+}
+
+/* Site-wide WCAG badge. */
+.footer-badge {
+  display: inline-block;
+  vertical-align: middle;
+  margin-top: 8px;
 }
 
 /* ------------------------------------------------------------
