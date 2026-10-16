@@ -192,6 +192,13 @@
               La sección Personajes depende de una API externa (SWAPI); si no responde, se
               muestra un aviso y el resto del sitio sigue disponible.
             </li>
+            <li>
+              La lectura en voz alta necesita una voz instalada en el sistema: sin ella el
+              navegador no puede sintetizar audio. Si no hay voces, el lector intenta un
+              respaldo por internet que los navegadores modernos suelen bloquear. Para
+              activarla, instala <code>speech-dispatcher</code> y <code>espeak-ng</code>, y
+              arranca Chromium con <code>--enable-speech-dispatcher</code>.
+            </li>
           </ul>
 
           <!-- Evaluación -->

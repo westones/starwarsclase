@@ -144,6 +144,14 @@ El sitio incluye, entre otras medidas:
 - **Teclado**: recorre la página con `Tab` / `Shift+Tab`; el foco debe verse en todo momento.
 - **Enlace de salto**: pulsa `Tab` al cargar; aparece «Saltar al contenido principal».
 - **Lector de voz**: usa «Leer página», pausa, reanuda y detén la lectura.
+
+> **Requisito para la lectura en voz alta.** Usa la Web Speech API, así que necesita
+> **una voz instalada en el sistema**. En Linux (Arch / Omarchy):
+> `sudo pacman -S speech-dispatcher espeak-ng`, reinicia el navegador por completo y
+> asegúrate de que Chromium arranca con el flag `--enable-speech-dispatcher` (en Arch se
+> añade a `~/.config/chromium-flags.conf`). Si no hay voces locales, el lector intenta un
+> respaldo por internet (Google Translate TTS), pero los navegadores modernos suelen
+> bloquearlo con `ERR_BLOCKED_BY_ORB`, por lo que la instalación local es la vía fiable.
 - **Auditoría automática** (requiere Node.js):
   ```bash
   npx pa11y --standard WCAG2AA index.html
