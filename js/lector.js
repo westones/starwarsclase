@@ -1,5 +1,5 @@
 // ============================================================
-// lector.js - Read speaker (Web Speech API / SpeechSynthesis).
+// lector.js - Read speaker (Web Speech API + network fallback).
 //
 // The shell ships two fixed buttons on every page:
 //   #btn-leer            - read / pause / resume toggle
@@ -7,20 +7,25 @@
 //
 // It reads ONLY the visible text of #contenido-principal, skips
 // script/style/aria-hidden nodes, normalizes whitespace and splits
-// the result into sentence-bounded chunks (~200 chars) so playback
-// stays smooth and can be paused and resumed mid-page.
+// the result into sentence-bounded chunks so playback stays smooth
+// and can be paused and resumed mid-page.
+//
+// TWO ENGINES (motor):
+//   1. "local"  - window.speechSynthesis (Web Speech API). Preferred,
+//                 works offline, requires an installed system voice.
+//   2. "red"    - Google Translate TTS, played through an <audio>
+//                 element. Used when the browser exposes NO local
+//                 voices (common on Linux without speech-dispatcher),
+//                 so the read-speaker still works. Requires internet.
+//
+// The engine is chosen at click time (not at boot) because voices can
+// load asynchronously via the "voiceschanged" event.
 //
 // Accessibility guarantees:
 //   - The toggle exposes aria-pressed and a Spanish label per state.
-//   - Start / pause / resume / stop are announced through an
+//   - Start / pause / resume / stop / failure are announced through an
 //     aria-live="polite" region.
-//   - When window.speechSynthesis is missing the buttons are
-//     disabled and a visible + screen-reader note is shown.
-//
-// Documented fallback (NOT implemented on purpose, to avoid a
-// network dependency): the Google Translate TTS endpoint could be
-// used to synthesize audio server-side, but this module never makes
-// a network call.
+//   - A visible note explains when the network engine is in use.
 // ============================================================
 
 (function () {
@@ -30,16 +35,28 @@
   const ETIQUETA_INACTIVO = "Leer página";
   const ETIQUETA_LEYENDO = "Pausar lectura";
   const ETIQUETA_PAUSADO = "Reanudar lectura";
-  const MAX_TROZO = 200; // target chunk length in characters
+  const MAX_TROZO_LOCAL = 200; // local engine chunk length (characters)
+  const MAX_TROZO_RED = 180; // network engine chunk (Google caps ~200)
   const IDIOMA = "es-ES";
   const VELOCIDAD = 0.98;
 
-  // Estados posibles del lector: "inactivo" | "leyendo" | "pausado".
+  // Google Translate TTS endpoint (unofficial, used as a documented
+  // fallback only). Playback happens through <audio src>, so no CORS
+  // request is made for the audio body.
+  const URL_TTS_RED =
+    "https://translate.google.com/translate_tts?ie=UTF-8&client=tw-ob&tl=es&q=";
+
+  // Estados posibles: "inactivo" | "leyendo" | "pausado".
   const estado = {
     modo: "inactivo",
+    motor: null, // "local" | "red"
     utterances: [],
+    audio: null, // <audio> used by the network engine
+    trozos: [],
+    indice: 0,
     vozEspanola: null,
-    soportado: typeof window.speechSynthesis !== "undefined" &&
+    soportado:
+      typeof window.speechSynthesis !== "undefined" &&
       typeof window.SpeechSynthesisUtterance !== "undefined",
   };
 
@@ -47,12 +64,12 @@
   let btnLeer = null;
   let btnDetener = null;
   let regionAnuncios = null;
+  let notaRed = null;
 
   // ----------------------------------------------------------
   // Live region helpers
   // ----------------------------------------------------------
 
-  // Ensures a visually-hidden polite live region exists and returns it.
   function asegurarRegionAnuncios() {
     let region = document.getElementById("lector-anuncios");
     if (!region) {
@@ -66,7 +83,6 @@
     return region;
   }
 
-  // Announces a short message to assistive technology.
   function anunciar(mensaje) {
     if (!regionAnuncios) return;
     // Clear first so repeated identical messages are re-announced.
@@ -76,11 +92,27 @@
     }, 50);
   }
 
+  // Small visible note shown once, the first time the network engine runs.
+  function mostrarNotaRed() {
+    if (notaRed) return;
+    const barra = document.querySelector(".read-speaker-bar");
+    if (!barra) return;
+    notaRed = document.createElement("p");
+    notaRed.id = "lector-nota-red";
+    notaRed.className = "read-speaker-note";
+    notaRed.setAttribute("role", "note");
+    notaRed.textContent =
+      "Tu sistema no tiene voces instaladas. La lectura intenta usar un servicio " +
+      "de voz por internet, pero los navegadores modernos suelen bloquearlo. " +
+      "Para activar la lectura en voz alta, instala un motor de voz del sistema " +
+      "(por ejemplo, speech-dispatcher y espeak-ng).";
+    barra.parentNode.insertBefore(notaRed, barra.nextSibling);
+  }
+
   // ----------------------------------------------------------
   // Text collection
   // ----------------------------------------------------------
 
-  // True when a text node belongs to visible, readable content.
   function nodoLegible(nodo) {
     const texto = nodo.nodeValue;
     if (!texto || !texto.trim()) return false;
@@ -88,14 +120,14 @@
     const el = nodo.parentElement;
     if (!el) return false;
 
-    // Skip non-content and explicitly hidden subtrees.
     if (
-      el.closest('script, style, noscript, template, [hidden], [aria-hidden="true"]')
+      el.closest(
+        'script, style, noscript, template, [hidden], [aria-hidden="true"]'
+      )
     ) {
       return false;
     }
 
-    // Skip CSS-hidden content (collapsed accordions, filtered cards...).
     const estilo = window.getComputedStyle(el);
     if (estilo.display === "none" || estilo.visibility === "hidden") {
       return false;
@@ -103,13 +135,14 @@
     return true;
   }
 
-  // Returns the normalized visible text of a root element.
   function extraerTexto(root) {
     if (!root) return "";
 
     const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, {
       acceptNode: function (nodo) {
-        return nodoLegible(nodo) ? NodeFilter.FILTER_ACCEPT : NodeFilter.FILTER_REJECT;
+        return nodoLegible(nodo)
+          ? NodeFilter.FILTER_ACCEPT
+          : NodeFilter.FILTER_REJECT;
       },
     });
 
@@ -127,20 +160,18 @@
   // Segmentation
   // ----------------------------------------------------------
 
-  // Splits a long sentence into <=MAX_TROZO pieces on clause boundaries,
-  // then by hard slicing, so nothing is left unread.
-  function trocearFraseLarga(frase) {
+  function trocearFraseLarga(frase, maxTrozo) {
     const trozos = [];
     const partes = frase.split(/(?<=[,;:])\s+/);
     let buffer = "";
 
     partes.forEach(function (parte) {
-      if ((buffer + " " + parte).trim().length > MAX_TROZO) {
+      if ((buffer + " " + parte).trim().length > maxTrozo) {
         if (buffer) trozos.push(buffer.trim());
         let resto = parte;
-        while (resto.length > MAX_TROZO) {
-          trozos.push(resto.slice(0, MAX_TROZO).trim());
-          resto = resto.slice(MAX_TROZO);
+        while (resto.length > maxTrozo) {
+          trozos.push(resto.slice(0, maxTrozo).trim());
+          resto = resto.slice(maxTrozo);
         }
         buffer = resto;
       } else {
@@ -152,13 +183,12 @@
     return trozos;
   }
 
-  // Splits text into sentence-bounded chunks of ~MAX_TROZO characters.
-  function segmentarTexto(texto) {
+  // Splits text into sentence-bounded chunks of ~maxTrozo characters.
+  function segmentarTexto(texto, maxTrozo) {
+    const limite = maxTrozo || MAX_TROZO_LOCAL;
     const limpio = String(texto || "").replace(/\s+/g, " ").trim();
     if (!limpio) return [];
 
-    // Prefer Intl.Segmenter (accurate sentence boundaries), fall back to
-    // a simple punctuation regex.
     let frases = [];
     if (typeof Intl !== "undefined" && typeof Intl.Segmenter === "function") {
       const segmentador = new Intl.Segmenter(IDIOMA, { granularity: "sentence" });
@@ -177,18 +207,18 @@
     let actual = "";
 
     frases.forEach(function (frase) {
-      if (frase.length > MAX_TROZO) {
+      if (frase.length > limite) {
         if (actual) {
           trozos.push(actual.trim());
           actual = "";
         }
-        trocearFraseLarga(frase).forEach(function (trozo) {
+        trocearFraseLarga(frase, limite).forEach(function (trozo) {
           trozos.push(trozo);
         });
         return;
       }
 
-      if ((actual + " " + frase).trim().length > MAX_TROZO) {
+      if ((actual + " " + frase).trim().length > limite) {
         if (actual) trozos.push(actual.trim());
         actual = frase;
       } else {
@@ -201,10 +231,9 @@
   }
 
   // ----------------------------------------------------------
-  // Voice selection
+  // Engine selection + voice selection
   // ----------------------------------------------------------
 
-  // Picks the best Spanish voice available: es-ES first, then any "es".
   function elegirVoz() {
     if (!estado.soportado) return;
     const voces = window.speechSynthesis.getVoices() || [];
@@ -217,14 +246,26 @@
       voces.find(function (v) {
         return /^es/i.test(v.lang);
       }) ||
-      null;
+      voces[0];
+  }
+
+  // Local voices available right now (Chrome/Chromium require libspeechd
+  // on Linux; without it getVoices() is empty).
+  function hayVocesLocales() {
+    if (!estado.soportado) return false;
+    const voces = window.speechSynthesis.getVoices() || [];
+    return voces.length > 0;
+  }
+
+  // Chooses the engine for THIS utterance. Local wins if available.
+  function elegirMotor() {
+    return hayVocesLocales() ? "local" : "red";
   }
 
   // ----------------------------------------------------------
   // UI state
   // ----------------------------------------------------------
 
-  // Reflects the current mode on the toggle button and the live region.
   function actualizarInterfaz() {
     if (!btnLeer) return;
 
@@ -240,22 +281,78 @@
     }
   }
 
-  // ----------------------------------------------------------
-  // Playback
-  // ----------------------------------------------------------
-
-  // Stops the current queue and returns to the idle state.
-  function detener(silencioso) {
-    if (!estado.soportado) return;
-    window.speechSynthesis.cancel();
+  // Resets internal playback state (does not touch the live region).
+  function reiniciarEstado() {
     estado.utterances = [];
+    estado.trozos = [];
+    estado.indice = 0;
+    estado.audio = null;
+    estado.motor = null;
     estado.modo = "inactivo";
     actualizarInterfaz();
-    if (!silencioso) anunciar("Lectura detenida.");
   }
 
-  // Builds the utterance queue for an array of text chunks and speaks it.
-  function hablarTrozos(trozos, mensajeInicio) {
+  // ----------------------------------------------------------
+  // Network engine (Google Translate TTS via <audio>)
+  // ----------------------------------------------------------
+
+  function reproducirTrozoRed() {
+    if (!estado.audio) return;
+
+    if (estado.indice >= estado.trozos.length) {
+      reiniciarEstado();
+      anunciar("Lectura finalizada.");
+      return;
+    }
+
+    const trozo = estado.trozos[estado.indice];
+    estado.audio.src = URL_TTS_RED + encodeURIComponent(trozo);
+    const promesa = estado.audio.play();
+    if (promesa && typeof promesa.catch === "function") {
+      promesa.catch(function () {
+        // Autoplay blocked or network failure.
+        reiniciarEstado();
+        anunciar("No se pudo reproducir la lectura por internet.");
+      });
+    }
+  }
+
+  function hablarConRed(trozos, mensajeInicio) {
+    if (!trozos.length) return;
+
+    // Fresh audio element per playback so events never leak between runs.
+    const audio = new Audio();
+    audio.preload = "auto";
+    estado.audio = audio;
+    estado.trozos = trozos;
+    estado.indice = 0;
+
+    audio.addEventListener("ended", function () {
+      estado.indice += 1;
+      reproducirTrozoRed();
+    });
+
+    audio.addEventListener("error", function () {
+      reiniciarEstado();
+      anunciar(
+        "La lectura por internet no está disponible: el navegador bloquea el " +
+          "servicio de voz externo. Instala un motor de voz del sistema."
+      );
+    });
+
+    estado.motor = "red";
+    estado.modo = "leyendo";
+    mostrarNotaRed();
+    actualizarInterfaz();
+    anunciar(mensajeInicio || "Lectura en voz alta iniciada.");
+    reproducirTrozoRed();
+  }
+
+  // ----------------------------------------------------------
+  // Local engine (Web Speech API)
+  // ----------------------------------------------------------
+
+  function hablarConLocal(trozos, mensajeInicio) {
     if (!estado.soportado || !trozos.length) return;
 
     // Cancel anything in flight; a fresh tick avoids a Chromium stall.
@@ -267,29 +364,31 @@
       utterance.rate = VELOCIDAD;
       if (estado.vozEspanola) utterance.voice = estado.vozEspanola;
 
-      // When the LAST chunk ends naturally, reset the UI.
       if (indice === trozos.length - 1) {
         utterance.onend = function () {
-          estado.modo = "inactivo";
-          estado.utterances = [];
-          actualizarInterfaz();
+          reiniciarEstado();
           anunciar("Lectura finalizada.");
         };
       }
 
-      // Ignore "interrupted"/"canceled" errors (they are expected on stop).
       utterance.onerror = function (evento) {
         const tipo = evento && evento.error;
         if (tipo === "interrupted" || tipo === "canceled") return;
-        estado.modo = "inactivo";
-        estado.utterances = [];
-        actualizarInterfaz();
-        anunciar("No se pudo reproducir la lectura.");
+        // Local engine failed mid-way (e.g. the voice disappeared):
+        // fall back to the network engine so the user still hears it.
+        const restantes = trozos.slice(indice);
+        if (restantes.length) {
+          hablarConRed(restantes, "Lectura en voz alta iniciada.");
+        } else {
+          reiniciarEstado();
+          anunciar("No se pudo reproducir la lectura.");
+        }
       };
 
       return utterance;
     });
 
+    estado.motor = "local";
     estado.modo = "leyendo";
     actualizarInterfaz();
 
@@ -300,9 +399,20 @@
     anunciar(mensajeInicio || "Lectura en voz alta iniciada.");
   }
 
-  // Reads a specific string (used by the [data-leer] bonus targets).
+  // Dispatches to the chosen engine.
+  function hablarTrozos(trozos, mensajeInicio) {
+    if (!trozos.length) return;
+    if (elegirMotor() === "local") {
+      hablarConLocal(trozos, mensajeInicio);
+    } else {
+      hablarConRed(trozos, mensajeInicio);
+    }
+  }
+
   function leerTexto(texto, etiqueta) {
-    const trozos = segmentarTexto(texto);
+    const motor = elegirMotor();
+    const max = motor === "red" ? MAX_TROZO_RED : MAX_TROZO_LOCAL;
+    const trozos = segmentarTexto(texto, max);
     if (!trozos.length) {
       anunciar("No hay contenido legible en este elemento.");
       return;
@@ -311,15 +421,31 @@
   }
 
   // ----------------------------------------------------------
-  // Toggle button behaviour
+  // Stop / toggle
   // ----------------------------------------------------------
 
-  function alPulsarLeer() {
-    if (!estado.soportado) return;
+  function detener(silencioso) {
+    if (estado.soportado && estado.motor === "local") {
+      window.speechSynthesis.cancel();
+    }
+    if (estado.audio) {
+      try {
+        estado.audio.pause();
+        estado.audio.removeAttribute("src");
+      } catch (e) {
+        /* ignore */
+      }
+    }
+    reiniciarEstado();
+    if (!silencioso) anunciar("Lectura detenida.");
+  }
 
+  function alPulsarLeer() {
     if (estado.modo === "inactivo") {
       const main = document.getElementById("contenido-principal");
-      const trozos = segmentarTexto(extraerTexto(main));
+      const motor = elegirMotor();
+      const max = motor === "red" ? MAX_TROZO_RED : MAX_TROZO_LOCAL;
+      const trozos = segmentarTexto(extraerTexto(main), max);
       if (!trozos.length) {
         anunciar("No hay contenido para leer en esta página.");
         return;
@@ -329,7 +455,11 @@
     }
 
     if (estado.modo === "leyendo") {
-      window.speechSynthesis.pause();
+      if (estado.motor === "local") {
+        window.speechSynthesis.pause();
+      } else if (estado.audio) {
+        estado.audio.pause();
+      }
       estado.modo = "pausado";
       actualizarInterfaz();
       anunciar("Lectura en pausa.");
@@ -337,7 +467,16 @@
     }
 
     if (estado.modo === "pausado") {
-      window.speechSynthesis.resume();
+      if (estado.motor === "local") {
+        window.speechSynthesis.resume();
+      } else if (estado.audio) {
+        const promesa = estado.audio.play();
+        if (promesa && typeof promesa.catch === "function") {
+          promesa.catch(function () {
+            /* ignore: the error handler resets the state */
+          });
+        }
+      }
       estado.modo = "leyendo";
       actualizarInterfaz();
       anunciar("Lectura reanudada.");
@@ -351,8 +490,6 @@
   function conectarObjetivosLectura() {
     const objetivos = document.querySelectorAll("[data-leer]");
     Array.prototype.forEach.call(objetivos, function (elemento) {
-      // Make it reachable and operable by keyboard without breaking
-      // elements that already declare their own semantics.
       if (!elemento.hasAttribute("tabindex")) elemento.setAttribute("tabindex", "0");
       if (!elemento.hasAttribute("role")) elemento.setAttribute("role", "button");
 
@@ -370,40 +507,9 @@
   }
 
   // ----------------------------------------------------------
-  // Unsupported-browser fallback
-  // ----------------------------------------------------------
-
-  function mostrarNoSoportado() {
-    if (btnLeer) {
-      btnLeer.disabled = true;
-      btnLeer.setAttribute("aria-pressed", "false");
-      btnLeer.setAttribute("title", "Tu navegador no admite la lectura en voz alta.");
-    }
-    if (btnDetener) btnDetener.disabled = true;
-
-    const barra = document.querySelector(".read-speaker-bar");
-    if (barra && !document.getElementById("lector-nota")) {
-      const nota = document.createElement("p");
-      nota.id = "lector-nota";
-      nota.className = "read-speaker-note";
-      nota.setAttribute("role", "note");
-      nota.textContent =
-        "La lectura en voz alta no está disponible porque este navegador no " +
-        "admite la Web Speech API. Como alternativa documentada podría usarse un " +
-        "servicio de síntesis externo, como Google Translate TTS, aunque este sitio " +
-        "no realiza llamadas de red.";
-      barra.parentNode.insertBefore(nota, barra.nextSibling);
-    }
-
-    anunciar(
-      "La lectura en voz alta no está disponible en este navegador. " +
-        "Se documenta Google Translate TTS como alternativa, sin implementarla."
-    );
-  }
-
-  // ----------------------------------------------------------
   // Boot
   // ----------------------------------------------------------
+
   function iniciar() {
     btnLeer = document.getElementById("btn-leer");
     btnDetener = document.getElementById("btn-detener-lectura");
@@ -411,18 +517,16 @@
 
     regionAnuncios = asegurarRegionAnuncios();
 
-    if (!estado.soportado) {
-      mostrarNoSoportado();
-      return;
-    }
-
     // Voices may load asynchronously; refresh on the event too.
     elegirVoz();
-    if (typeof window.speechSynthesis.onvoiceschanged !== "undefined") {
-      window.speechSynthesis.onvoiceschanged = elegirVoz;
+    if (estado.soportado) {
+      if (typeof window.speechSynthesis.onvoiceschanged !== "undefined") {
+        window.speechSynthesis.onvoiceschanged = elegirVoz;
+      }
+      if (window.speechSynthesis.addEventListener) {
+        window.speechSynthesis.addEventListener("voiceschanged", elegirVoz);
+      }
     }
-    window.speechSynthesis.addEventListener &&
-      window.speechSynthesis.addEventListener("voiceschanged", elegirVoz);
 
     btnLeer.addEventListener("click", alPulsarLeer);
 
@@ -432,8 +536,7 @@
       });
     }
 
-    // Reset cleanly when the page is hidden or unloaded (avoids a
-    // speech queue that keeps talking after navigation).
+    // Reset cleanly when the page is hidden or unloaded.
     window.addEventListener("pagehide", function () {
       detener(true);
     });
