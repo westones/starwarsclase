@@ -1102,3 +1102,197 @@ a:hover {
   color: var(--sw-muted);
   font-size: 14px;
 }
+
+/* ------------------------------------------------------------
+   FACCIONES PAGE — saber picker, canvas, video, accordion.
+   Scoped additions; every colour maps to an existing token.
+   ------------------------------------------------------------ */
+.sable-panel {
+  margin-bottom: 24px;
+}
+
+.sable-panel .card-text {
+  max-width: 620px;
+}
+
+.sable-opciones,
+.alineacion-opciones {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.sable-btn {
+  background: transparent;
+  border-color: var(--sw-border);
+  color: var(--sw-text);
+}
+
+.sable-btn:hover {
+  background: var(--sw-panel-2);
+  border-color: var(--sw-gold);
+}
+
+.sable-btn[aria-pressed="true"] {
+  border-color: var(--sw-gold);
+  box-shadow: inset 0 0 0 1px var(--sw-gold);
+}
+
+.sable-swatch {
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.45);
+  border-radius: 50%;
+}
+
+.alineacion-btn[aria-pressed="true"] {
+  border-color: var(--sw-gold);
+  color: var(--sw-gold);
+  background: var(--sw-panel-2);
+}
+
+/* Faction cards: keep the emblem legible inside the fixed card image box. */
+.faccion-emblem {
+  object-fit: contain;
+  background: var(--sw-panel-2);
+  padding: 14px;
+}
+
+/* Bounded canvas container (the canvas itself fills it). */
+.canvas-wrap {
+  position: relative;
+  margin: 0 0 8px;
+  overflow: hidden;
+  border: 1px solid var(--sw-border);
+  border-radius: var(--sw-radius);
+  background: var(--sw-black);
+}
+
+#fondo-estrellas {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+/* Native video block. */
+.sw-video {
+  display: block;
+  width: 100%;
+  max-width: 960px;
+  height: auto;
+  border: 1px solid var(--sw-border);
+  border-radius: var(--sw-radius);
+  background: var(--sw-black);
+}
+
+.video-transcript {
+  margin: 16px 0 8px;
+  color: var(--sw-muted);
+  font-size: 14px;
+}
+
+.video-transcript summary {
+  color: var(--sw-gold);
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.video-transcript p {
+  margin: 8px 0 0;
+}
+
+.video-embed {
+  margin-top: 16px;
+}
+
+/* Back to top button (injected by navegacion.js). */
+.volver-arriba {
+  display: none;
+  position: fixed;
+  right: 20px;
+  bottom: 84px;
+  z-index: 1400;
+  background: var(--sw-panel);
+  border-color: var(--sw-border);
+}
+
+/* Note shown when the browser lacks SpeechSynthesis. */
+.read-speaker-note {
+  position: fixed;
+  left: 20px;
+  bottom: 20px;
+  z-index: 1500;
+  max-width: 340px;
+  margin: 0;
+  padding: 12px 16px;
+  border: 1px solid var(--sw-red);
+  border-radius: var(--sw-radius);
+  background: var(--sw-panel);
+  color: var(--sw-text);
+  font-size: 13px;
+}
+
+/* Mobile navigation toggle + collapsed state. */
+.nav-toggle {
+  display: none;
+  width: 100%;
+  margin-bottom: 12px;
+}
+
+/* Dark theme for the Bootstrap accordion. */
+.sw-accordion {
+  --bs-accordion-bg: var(--sw-panel);
+  --bs-accordion-color: var(--sw-text);
+  --bs-accordion-border-color: var(--sw-border);
+  --bs-accordion-btn-color: var(--sw-text);
+  --bs-accordion-btn-bg: var(--sw-panel);
+  --bs-accordion-active-color: var(--sw-black);
+  --bs-accordion-active-bg: var(--sw-gold);
+  --bs-accordion-btn-focus-box-shadow: 0 0 0 0.2rem rgba(255, 232, 31, 0.35);
+}
+
+.sw-accordion .accordion-button {
+  background: var(--sw-panel);
+  color: var(--sw-text);
+}
+
+.sw-accordion .accordion-button:not(.collapsed) {
+  background: var(--sw-gold);
+  color: var(--sw-black);
+}
+
+.sw-accordion .accordion-button::after {
+  filter: invert(1) grayscale(1) brightness(1.7);
+}
+
+.sw-accordion .accordion-button:not(.collapsed)::after {
+  filter: none;
+}
+
+.sw-accordion .accordion-body {
+  background: var(--sw-panel-2);
+  color: var(--sw-text);
+}
+
+/* "Personaje del día" populated with the generated SVG avatar. */
+.personaje-dia-avatar {
+  display: flex;
+  justify-content: center;
+}
+
+.personaje-dia-link {
+  margin: 4px 0 0;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+@media (max-width: 820px) {
+  .nav-toggle {
+    display: inline-flex;
+  }
+
+  .side-nav.nav-collapsed {
+    display: none;
+  }
+}

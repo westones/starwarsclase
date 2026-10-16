@@ -1,0 +1,512 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Galaxia Star Wars | Facciones</title>
+    <meta
+      name="description"
+      content="Facciones y órdenes del universo Star Wars con emblemas originales, selector de sable de luz, animación en canvas y video con subtítulos."
+    />
+    <meta name="theme-color" content="#05070d" />
+    <link rel="icon" href="img/favicon.svg" type="image/svg+xml" />
+
+    <!-- Load order: Bootstrap base, then Tailwind (preflight disabled), then the theme. -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" />
+    <script src="https://cdn.tailwindcss.com/3.4.16"></script>
+    <script>
+      tailwind.config = { corePlugins: { preflight: false } };
+    </script>
+    <link rel="stylesheet" href="css/style.css" />
+  </head>
+  <body class="page">
+    <a class="skip-link" href="#contenido-principal">Saltar al contenido principal</a>
+
+    <audio id="musica-fondo" loop preload="none" aria-label="Música ambiental de la galaxia">
+      <source src="audio/ambient.mp3" type="audio/mpeg" />
+      Tu navegador no soporta audio.
+    </audio>
+
+    <!-- Header -->
+    <header class="sw-header" role="banner">
+      <div class="sw-header-container">
+        <div class="brand">
+          <svg class="brand-emblem" viewBox="0 0 64 64" aria-hidden="true" focusable="false">
+            <circle cx="32" cy="32" r="29" fill="#0e1524" stroke="#ffe81f" stroke-width="2" />
+            <path
+              d="M32 7l5 16 16 5-16 5-5 16-5-16-16-5 16-5z"
+              fill="#ffe81f"
+            />
+            <circle cx="32" cy="28" r="3.4" fill="#05070d" />
+          </svg>
+          <div>
+            <span class="brand-name">Galaxia Star Wars</span>
+            <span class="brand-subtitle">Archivo galáctico</span>
+          </div>
+        </div>
+        <button id="music-button" class="sw-btn ghost" type="button" aria-pressed="false">
+          Encender música
+        </button>
+      </div>
+    </header>
+
+    <!-- Page shell: nav | content | widgets -->
+    <div class="page-layout">
+      <!-- Left sidebar -->
+      <aside class="left-sidebar" aria-label="Navegación principal">
+        <div class="navigation-panel">
+          <h2 class="panel-title">Navegación</h2>
+          <nav class="side-nav" aria-label="Secciones del sitio">
+            <a href="index.html">
+              <svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                <path d="M3 9.5 12 3l9 6.5V20a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z" />
+              </svg>
+              Inicio
+            </a>
+            <a href="personajes.html">
+              <svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                <circle cx="9" cy="8" r="3.2" />
+                <path d="M3 20a6 6 0 0 1 12 0" />
+                <path d="M16 11a3 3 0 0 0 0-6" />
+                <path d="M21 20a6 6 0 0 0-5-5.9" />
+              </svg>
+              Personajes
+            </a>
+            <a href="facciones.html" class="active" aria-current="page">
+              <svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                <path d="M12 3l8 3v6c0 5-3.4 8-8 9-4.6-1-8-4-8-9V6z" />
+              </svg>
+              Facciones
+            </a>
+            <a href="historia.html">
+              <svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                <circle cx="12" cy="12" r="9" />
+                <path d="M12 7v5.2l3.4 2" />
+              </svg>
+              Historia
+            </a>
+            <a href="enlaces.html">
+              <svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71" />
+                <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71" />
+              </svg>
+              Enlaces
+            </a>
+            <a href="accesibilidad.html">
+              <svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                <circle cx="12" cy="5" r="2" />
+                <path d="M12 8v6" />
+                <path d="M5 10l7 1 7-1" />
+                <path d="M12 14l-3 7" />
+                <path d="M12 14l3 7" />
+              </svg>
+              Accesibilidad
+            </a>
+          </nav>
+        </div>
+      </aside>
+
+      <!-- Main content -->
+      <main class="main-content" id="contenido-principal" tabindex="-1">
+        <section class="content-panel" aria-labelledby="titulo-facciones">
+          <p class="panel-title">Contenido principal</p>
+
+          <h1 class="page-title page-title--underline" id="titulo-facciones">
+            Facciones y órdenes de la galaxia
+          </h1>
+          <p class="page-intro">
+            Doce facciones y órdenes se disputan el equilibrio de la galaxia. Filtra por
+            alineación, elige tu sable de luz y descubre sus símbolos, su historia y su
+            carácter. Todos los emblemas son ilustraciones vectoriales originales.
+          </p>
+
+          <!-- Lightsaber accent picker (jQuery) -->
+          <div class="sidebar-panel sable-panel" role="group" aria-label="Selector de color del sable de luz">
+            <h2 class="panel-title">Elige tu sable de luz</h2>
+            <p class="card-text">
+              El color del sable ajusta el acento dorado de todo el sitio y se guarda en tu
+              navegador para la próxima visita.
+            </p>
+            <div class="sable-opciones">
+              <button class="sw-btn sable-btn" type="button" data-sable="azul" aria-pressed="false" aria-label="Sable de luz azul">
+                <span class="sable-swatch" style="background: #5aa9e6" aria-hidden="true"></span>
+                Azul
+              </button>
+              <button class="sw-btn sable-btn" type="button" data-sable="verde" aria-pressed="false" aria-label="Sable de luz verde">
+                <span class="sable-swatch" style="background: #43d17c" aria-hidden="true"></span>
+                Verde
+              </button>
+              <button class="sw-btn sable-btn" type="button" data-sable="rojo" aria-pressed="false" aria-label="Sable de luz rojo">
+                <span class="sable-swatch" style="background: #ff4d4d" aria-hidden="true"></span>
+                Rojo
+              </button>
+              <button class="sw-btn sable-btn" type="button" data-sable="morado" aria-pressed="false" aria-label="Sable de luz morado">
+                <span class="sable-swatch" style="background: #b085f5" aria-hidden="true"></span>
+                Morado
+              </button>
+              <button class="sw-btn sable-btn" type="button" data-sable="dorado" aria-pressed="false" aria-label="Sable de luz dorado">
+                <span class="sable-swatch" style="background: #ffe81f" aria-hidden="true"></span>
+                Dorado
+              </button>
+            </div>
+          </div>
+
+          <!-- Alignment filter (jQuery) -->
+          <div class="filters" role="group" aria-label="Filtrar facciones por alineación">
+            <div class="filters-field">
+              <span class="filters-label" id="etiqueta-alineacion">Alineación</span>
+              <div class="alineacion-opciones" role="group" aria-labelledby="etiqueta-alineacion">
+                <button class="sw-btn ghost alineacion-btn" type="button" data-alineacion="todo" aria-pressed="true">Todas</button>
+                <button class="sw-btn ghost alineacion-btn" type="button" data-alineacion="luz" aria-pressed="false">Luz</button>
+                <button class="sw-btn ghost alineacion-btn" type="button" data-alineacion="oscuridad" aria-pressed="false">Oscuridad</button>
+                <button class="sw-btn ghost alineacion-btn" type="button" data-alineacion="neutral" aria-pressed="false">Neutral</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Faction grid -->
+          <div class="sw-card-grid sw-card-grid--3" id="lista-facciones">
+            <article class="sw-card faccion-card" data-alineacion="luz">
+              <img class="card-image faccion-emblem" src="img/emblemas/rebelde.svg" alt="Emblema de la Alianza Rebelde" />
+              <div class="card-body">
+                <h3 class="card-title">Alianza Rebelde</h3>
+                <p class="card-text">Movimiento clandestino que lucha por restaurar la libertad en la galaxia.</p>
+                <span class="sw-badge sw-badge--green">Luz</span>
+              </div>
+            </article>
+
+            <article class="sw-card faccion-card" data-alineacion="oscuridad">
+              <img class="card-image faccion-emblem" src="img/emblemas/imperio.svg" alt="Emblema del Imperio Galáctico" />
+              <div class="card-body">
+                <h3 class="card-title">Imperio Galáctico</h3>
+                <p class="card-text">Régimen militar autoritario que impone su orden por la fuerza.</p>
+                <span class="sw-badge sw-badge--red">Oscuridad</span>
+              </div>
+            </article>
+
+            <article class="sw-card faccion-card" data-alineacion="luz">
+              <img class="card-image faccion-emblem" src="img/emblemas/jedi.svg" alt="Emblema de la Orden Jedi" />
+              <div class="card-body">
+                <h3 class="card-title">Orden Jedi</h3>
+                <p class="card-text">Guardianes de la paz que sirven a la luz y al equilibrio de la Fuerza.</p>
+                <span class="sw-badge sw-badge--green">Luz</span>
+              </div>
+            </article>
+
+            <article class="sw-card faccion-card" data-alineacion="oscuridad">
+              <img class="card-image faccion-emblem" src="img/emblemas/sith.svg" alt="Emblema de la Orden Sith" />
+              <div class="card-body">
+                <h3 class="card-title">Orden Sith</h3>
+                <p class="card-text">Maestros del lado oscuro que ambicionan el poder absoluto.</p>
+                <span class="sw-badge sw-badge--red">Oscuridad</span>
+              </div>
+            </article>
+
+            <article class="sw-card faccion-card" data-alineacion="luz">
+              <img class="card-image faccion-emblem" src="img/emblemas/republica.svg" alt="Emblema de la República Galáctica" />
+              <div class="card-body">
+                <h3 class="card-title">República Galáctica</h3>
+                <p class="card-text">Gobierno democrático que unió a miles de mundos durante milenios.</p>
+                <span class="sw-badge sw-badge--green">Luz</span>
+              </div>
+            </article>
+
+            <article class="sw-card faccion-card" data-alineacion="oscuridad">
+              <img class="card-image faccion-emblem" src="img/emblemas/separatistas.svg" alt="Emblema de la Confederación Separatista" />
+              <div class="card-body">
+                <h3 class="card-title">Confederación Separatista</h3>
+                <p class="card-text">Coalición de sistemas que se separó de la República y desató la guerra.</p>
+                <span class="sw-badge sw-badge--red">Oscuridad</span>
+              </div>
+            </article>
+
+            <article class="sw-card faccion-card" data-alineacion="neutral">
+              <img class="card-image faccion-emblem" src="img/emblemas/mandalorianos.svg" alt="Emblema de los Mandalorianos" />
+              <div class="card-body">
+                <h3 class="card-title">Mandalorianos</h3>
+                <p class="card-text">Cultura guerrera que valora el honor, el código y la destreza en combate.</p>
+                <span class="sw-badge sw-badge--orange">Neutral</span>
+              </div>
+            </article>
+
+            <article class="sw-card faccion-card" data-alineacion="luz">
+              <img class="card-image faccion-emblem" src="img/emblemas/nueva-republica.svg" alt="Emblema de la Nueva República" />
+              <div class="card-body">
+                <h3 class="card-title">Nueva República</h3>
+                <p class="card-text">Gobierno restaurado tras la caída del Imperio para devolver la democracia.</p>
+                <span class="sw-badge sw-badge--green">Luz</span>
+              </div>
+            </article>
+
+            <article class="sw-card faccion-card" data-alineacion="oscuridad">
+              <img class="card-image faccion-emblem" src="img/emblemas/primera-orden.svg" alt="Emblema de la Primera Orden" />
+              <div class="card-body">
+                <h3 class="card-title">Primera Orden</h3>
+                <p class="card-text">Heredera del Imperio que resurge desde las sombras de la galaxia.</p>
+                <span class="sw-badge sw-badge--red">Oscuridad</span>
+              </div>
+            </article>
+
+            <article class="sw-card faccion-card" data-alineacion="luz">
+              <img class="card-image faccion-emblem" src="img/emblemas/resistencia.svg" alt="Emblema de la Resistencia" />
+              <div class="card-body">
+                <h3 class="card-title">Resistencia</h3>
+                <p class="card-text">Fuerza reducida pero decidida que planta cara a la Primera Orden.</p>
+                <span class="sw-badge sw-badge--green">Luz</span>
+              </div>
+            </article>
+
+            <article class="sw-card faccion-card" data-alineacion="neutral">
+              <img class="card-image faccion-emblem" src="img/emblemas/cazarrecompensas.svg" alt="Emblema del Gremio de Cazarrecompensas" />
+              <div class="card-body">
+                <h3 class="card-title">Gremio de Cazarrecompensas</h3>
+                <p class="card-text">Red de agentes que trabajan por encargo en el Borde Exterior.</p>
+                <span class="sw-badge sw-badge--orange">Neutral</span>
+              </div>
+            </article>
+
+            <article class="sw-card faccion-card" data-alineacion="neutral">
+              <img class="card-image faccion-emblem" src="img/emblemas/contrabandistas.svg" alt="Emblema de los Contrabandistas" />
+              <div class="card-body">
+                <h3 class="card-title">Contrabandistas</h3>
+                <p class="card-text">Pilotos y comerciantes que operan al margen de la ley conocida.</p>
+                <span class="sw-badge sw-badge--orange">Neutral</span>
+              </div>
+            </article>
+          </div>
+
+          <!-- Canvas: starfield animation -->
+          <h2 class="section-title">Viaje interestelar</h2>
+          <div class="canvas-wrap">
+            <canvas
+              id="fondo-estrellas"
+              width="1000"
+              height="420"
+              role="img"
+              aria-label="Animación de un campo de estrellas en movimiento"
+            >
+              Tu navegador no admite el elemento canvas; puedes seguir explorando el resto de la
+              página con normalidad.
+            </canvas>
+          </div>
+          <p class="section-actions">
+            <button id="btn-hiperespacio" class="sw-btn primary" type="button" aria-pressed="false">
+              Activar hiperespacio
+            </button>
+          </p>
+
+          <!-- Video: native + external embed -->
+          <h2 class="section-title">Video: la saga en imágenes</h2>
+          <video
+            class="sw-video"
+            controls
+            preload="metadata"
+            poster="img/video-poster.svg"
+            width="960"
+            height="540"
+          >
+            <source src="video/intro.mp4" type="video/mp4" />
+            <track kind="captions" src="video/intro.es.vtt" srclang="es" label="Español" default />
+            Tu navegador no admite el elemento video. Puedes
+            <a href="video/intro.es.vtt">descargar la transcripción</a>.
+          </video>
+
+          <details class="video-transcript">
+            <summary>Ver transcripción del video</summary>
+            <p>Hace mucho tiempo, en una galaxia muy, muy lejana...</p>
+            <p>Un archivo reúne a los héroes y villanos más conocidos de la saga.</p>
+            <p>Explora personajes, facciones e historia en Galaxia Star Wars.</p>
+          </details>
+
+          <div class="video-embed">
+            <iframe
+              class="video-embed"
+              src="https://www.youtube.com/embed/sGbxmsDFVnE"
+              title="Tráiler oficial de Star Wars"
+              loading="lazy"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+              allowfullscreen
+            ></iframe>
+          </div>
+
+          <!-- Bootstrap accordion component -->
+          <h2 class="section-title">Preguntas frecuentes de la galaxia</h2>
+          <div class="accordion sw-accordion" id="faq-galaxia">
+            <div class="accordion-item">
+              <h3 class="accordion-header" id="faq-1-titulo">
+                <button
+                  class="accordion-button collapsed"
+                  type="button"
+                  data-bs-toggle="collapse"
+                  data-bs-target="#faq-1"
+                  aria-expanded="false"
+                  aria-controls="faq-1"
+                >
+                  ¿Qué es la Fuerza?
+                </button>
+              </h3>
+              <div id="faq-1" class="accordion-collapse collapse" role="region" aria-labelledby="faq-1-titulo" data-bs-parent="#faq-galaxia">
+                <div class="accordion-body">
+                  Un campo de energía que conecta a todos los seres vivos y que puede ser
+                  canalizado por quienes son sensibles a ella.
+                </div>
+              </div>
+            </div>
+
+            <div class="accordion-item">
+              <h3 class="accordion-header" id="faq-2-titulo">
+                <button
+                  class="accordion-button collapsed"
+                  type="button"
+                  data-bs-toggle="collapse"
+                  data-bs-target="#faq-2"
+                  aria-expanded="false"
+                  aria-controls="faq-2"
+                >
+                  ¿Cuál es la diferencia entre la luz y la oscuridad?
+                </button>
+              </h3>
+              <div id="faq-2" class="accordion-collapse collapse" role="region" aria-labelledby="faq-2-titulo" data-bs-parent="#faq-galaxia">
+                <div class="accordion-body">
+                  La luz busca el equilibrio y la protección de los demás; la oscuridad persigue
+                  el poder personal a cualquier precio.
+                </div>
+              </div>
+            </div>
+
+            <div class="accordion-item">
+              <h3 class="accordion-header" id="faq-3-titulo">
+                <button
+                  class="accordion-button collapsed"
+                  type="button"
+                  data-bs-toggle="collapse"
+                  data-bs-target="#faq-3"
+                  aria-expanded="false"
+                  aria-controls="faq-3"
+                >
+                  ¿Qué facciones aparecen en este archivo?
+                </button>
+              </h3>
+              <div id="faq-3" class="accordion-collapse collapse" role="region" aria-labelledby="faq-3-titulo" data-bs-parent="#faq-galaxia">
+                <div class="accordion-body">
+                  Doce facciones y órdenes, entre ellas la Alianza Rebelde, el Imperio Galáctico,
+                  la Orden Jedi y la Orden Sith.
+                </div>
+              </div>
+            </div>
+
+            <div class="accordion-item">
+              <h3 class="accordion-header" id="faq-4-titulo">
+                <button
+                  class="accordion-button collapsed"
+                  type="button"
+                  data-bs-toggle="collapse"
+                  data-bs-target="#faq-4"
+                  aria-expanded="false"
+                  aria-controls="faq-4"
+                >
+                  ¿De dónde proceden los símbolos?
+                </button>
+              </h3>
+              <div id="faq-4" class="accordion-collapse collapse" role="region" aria-labelledby="faq-4-titulo" data-bs-parent="#faq-galaxia">
+                <div class="accordion-body">
+                  Todos los emblemas son ilustraciones vectoriales originales creadas para este
+                  proyecto con la paleta de color del sitio.
+                </div>
+              </div>
+            </div>
+
+            <div class="accordion-item">
+              <h3 class="accordion-header" id="faq-5-titulo">
+                <button
+                  class="accordion-button collapsed"
+                  type="button"
+                  data-bs-toggle="collapse"
+                  data-bs-target="#faq-5"
+                  aria-expanded="false"
+                  aria-controls="faq-5"
+                >
+                  ¿Cómo puedo cambiar el color de mi sable?
+                </button>
+              </h3>
+              <div id="faq-5" class="accordion-collapse collapse" role="region" aria-labelledby="faq-5-titulo" data-bs-parent="#faq-galaxia">
+                <div class="accordion-body">
+                  Usa los botones del panel «Elige tu sable de luz»; la preferencia se guarda en tu
+                  navegador y el acento del sitio cambia al instante.
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      </main>
+
+      <!-- Right sidebar -->
+      <aside class="right-sidebar" aria-label="Panel lateral">
+        <div class="sidebar-panel">
+          <h2 class="panel-title">Personaje del día</h2>
+          <div class="personaje-dia" id="personaje-dia">
+            <div class="img-placeholder personaje-dia-image">
+              <span>Imagen</span>
+            </div>
+            <p class="personaje-dia-number">#???</p>
+            <p class="personaje-dia-name">¿Quién será hoy?</p>
+          </div>
+        </div>
+
+        <div class="fact-box">
+          <p class="fact-title">Dato galáctico</p>
+          <p class="fact-text">
+            La Vía Láctea que conocemos está inspirada en una galaxia espiral, igual que
+            muchas de las que aparecen en la saga.
+          </p>
+        </div>
+
+        <div class="sidebar-panel">
+          <h2 class="panel-title">Enlaces rápidos</h2>
+          <ul class="quick-links">
+            <li><a href="personajes.html">Personajes destacados</a></li>
+            <li><a href="facciones.html">Comparar facciones</a></li>
+            <li><a href="historia.html">Línea temporal</a></li>
+            <li><a href="accesibilidad.html">Declaración de accesibilidad</a></li>
+          </ul>
+        </div>
+      </aside>
+    </div>
+
+    <!-- Read speaker -->
+    <div class="read-speaker-bar" role="group" aria-label="Controles de lectura en voz alta">
+      <button id="btn-leer" class="sw-btn read-speaker" type="button" aria-pressed="false">
+        Leer página
+      </button>
+      <button id="btn-detener-lectura" class="sw-btn ghost" type="button">Detener</button>
+    </div>
+
+    <!-- Footer -->
+    <footer class="sw-footer" role="contentinfo">
+      <div class="sw-footer-container">
+        <p class="footer-copy">
+          © 2026 Equipo Galaxia · Proyecto de clase sin ánimo de lucro
+        </p>
+        <ul class="footer-links">
+          <li><a href="accesibilidad.html">Accesibilidad</a></li>
+          <li><a href="LICENSE">Licencia GNU GPL v3.0</a></li>
+        </ul>
+        <p class="footer-note">
+          Star Wars y todos los nombres y personajes relacionados son marcas registradas de
+          Disney/Lucasfilm. Este sitio es un trabajo educativo sin ánimo de lucro y no está
+          afiliado ni respaldado por Disney/Lucasfilm.
+        </p>
+        <p class="footer-note">Código bajo licencia GNU GPL v3.0.</p>
+      </div>
+    </footer>
+
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="js/api.js"></script>
+    <script src="js/dom.js"></script>
+    <script src="js/script.js"></script>
+    <script src="js/canvas.js"></script>
+    <script src="js/lector.js"></script>
+    <script src="js/navegacion.js"></script>
+  </body>
+</html>
