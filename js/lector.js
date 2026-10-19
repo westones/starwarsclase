@@ -239,7 +239,14 @@
     const voces = window.speechSynthesis.getVoices() || [];
     if (voces.length === 0) return;
 
+    // Preference order:
+    //   1. Piper (natural neural voice, when installed) — how to install it is
+    //      documented in the README.
+    //   2. Any es-ES voice, 3. any Spanish voice, 4. whatever is available.
     estado.vozEspanola =
+      voces.find(function (v) {
+        return /piper/i.test(v.name) || /piper/i.test(v.voiceURI || "");
+      }) ||
       voces.find(function (v) {
         return /^es[-_]ES/i.test(v.lang);
       }) ||
