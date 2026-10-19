@@ -1,0 +1,53 @@
+NOTICE
+======
+
+Galaxia Star Wars — aviso de obra derivada y procedencia de recursos
+Última actualización: 2026
+
+1. Obra derivada
+----------------
+
+Este proyecto ("Galaxia Star Wars") es una adaptación modificada del proyecto de clase
+original denominado "TrabajoPokemon" (una web temática de Pokémon), publicado bajo la
+Licencia Pública General de GNU, versión 3 (GPL-3.0).
+
+En cumplimiento de la GPL-3.0, se reconoce la autoría de la obra original y se distribuye
+esta adaptación bajo la misma licencia. El texto completo de la licencia está en el archivo
+LICENSE de este repositorio.
+
+2. Modificaciones respecto a la obra original
+---------------------------------------------
+
+- Cambio de temática: de Pokémon a Star Wars, con todos los textos, títulos y contenidos
+  reescritos en español.
+- Nueva identidad visual: paleta oscura con acento dorado y azul, y un tema de diseño propio
+  definido con tokens en CSS.
+- Nuevo conjunto completo de ilustraciones, emblemas y distintivos en formato SVG original,
+  creados para este proyecto.
+- Incorporación de Bootstrap 5, Tailwind CSS y jQuery (cargados por CDN), que no existían en
+  la obra original.
+- Nuevos módulos de JavaScript propios: acceso a la API SWAPI, animación en `<canvas>`,
+  lector de voz con la Web Speech API, comportamiento global de jQuery y el mazo de
+  diapositivas.
+- Nuevo audio ambiental sintetizado y un vídeo propio con subtítulos en español.
+- Nuevas páginas: declaración de accesibilidad, storyboard y presentación.
+- Revisión de accesibilidad orientada a WCAG 2.1 nivel AA, con informes antes y después.
+
+3. Procedencia de los recursos
+------------------------------
+
+- Ilustraciones, emblemas, distintivos y el certificado de conformidad: archivos SVG
+  originales generados para este proyecto. No se incluye arte de terceros.
+- Audio (`audio/ambient.mp3`, `audio/sable.mp3`): pistas originales sintetizadas para este
+  proyecto.
+- Vídeo (`video/intro.mp4`) y subtítulos (`video/intro.es.vtt`): material original generado
+  para este proyecto.
+- Datos de personajes: API pública SWAPI (https://swapi.dev), consultada en tiempo de
+  ejecución; no se redistribuyen sus datos.
+
+4. Aviso sobre marcas registradas
+---------------------------------
+
+Star Wars y todos los nombres, personajes, vehículos, planetas y logotipos relacionados son
+marcas registradas de Disney/Lucasfilm. Este sitio es un trabajo educativo sin ánimo de lucro,
+no está afiliado ni respaldado por Disney/Lucasfilm y no emplea sus logotipos.

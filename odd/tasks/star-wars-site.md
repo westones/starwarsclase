@@ -71,19 +71,30 @@ files and commits inside it. No push / no remote creation.
 
 ## Progress
 - [x] Explore original project (mapped by explore agent)
-- [x] T1 Scaffold + git init + LICENSE
-- [ ] T2 Core site
-- [ ] T3 jQuery elements
-- [ ] T4 Read speaker
-- [ ] T5 Accessibility audit
-- [ ] T6 Docs
-- [ ] T7 Fixes + final verification
+- [x] T1 Scaffold + git init + LICENSE — commit e223660
+- [x] T2 Core site (theme + shell + Inicio + assets) — commit c83cf24
+- [x] T3 jQuery elements — commits e4cc192 (explorer) + 088bf0a (picker/hyperspace/music/back-to-top)
+- [x] T4 Read speaker (Web Speech API) — commit 088bf0a
+- [x] T5 Accessibility audit before/after — axe-core 4.14.0, 88 (original) -> 8 -> 0 violations
+- [x] T6 Docs (historia, enlaces, accesibilidad, storyboard, presentacion, README, NOTICE) — commit 28f3927
+- [x] T7 Fixes + final verification — commit a4eea77 (0 violations on 8 pages)
 
 ## Verification evidence
-- (pending)
+- axe-core 4.14.0 WCAG 2.1 AA, Chromium 153 headless, page served over http:
+  - original Pokemon project: 88 violation nodes
+  - Star Wars initial (28f3927): 8 violation nodes, 77 incomplete
+  - Star Wars after fixes (a4eea77): 0 violation nodes, 51 incomplete (SVG-text / hero gradient, manually verified AA)
+- Reports: docs/informe-accesibilidad-antes.md, docs/informe-accesibilidad-despues.md
+- Contrast verified: #5aa9e6 on #0e1524 = 7.17:1, on #16203a = 6.34:1
+- All 8 pages keep the shared shell (`grep -L contenido-principal` -> none)
 
 ## Next step
-T2 — delegate core site build.
+Done. Optional: fill presentation slide 1 team names; verify VTT captions over http.
+
+## Known limitations
+- VTT captions require an HTTP server (blocked under file://).
+- YouTube iframe content is third-party and not audited (frame-tested).
+- Figma deliverable intentionally waived by the user (rubric criterion 2).
 
 ## Rationale log
 - Chose original SVG artwork over third-party photos to avoid shipping copyrighted

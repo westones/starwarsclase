@@ -1,0 +1,1556 @@
+/* ============================================================
+   Galaxia Star Wars — theme + shell layout
+   Static, hand-written CSS. Loaded LAST so it wins over
+   Bootstrap and Tailwind. Dark theme, WCAG 2.1 AA.
+   All identifiers/comments are English; UI copy is Spanish
+   and lives in the HTML, not here.
+   ============================================================ */
+
+/* ------------------------------------------------------------
+   DESIGN TOKENS
+   ------------------------------------------------------------ */
+:root {
+  --sw-black: #05070d; /* page background */
+  --sw-panel: #0e1524; /* panels */
+  --sw-panel-2: #16203a; /* elevated / hover */
+  --sw-border: #2b3a5c;
+  --sw-text: #e9eef7; /* body text */
+  --sw-muted: #a9b4c7; /* secondary text */
+  --sw-gold: #ffe81f; /* Star Wars accent */
+  --sw-blue: #5aa9e6; /* Rebel / lightsaber blue */
+  --sw-blue-dark: #1f6fb2;
+  --sw-red: #ff4d4d; /* Empire / Sith red */
+  --sw-red-dark: #b32424;
+  --sw-green: #43d17c; /* Jedi green */
+  --sw-purple: #b085f5; /* Mace purple */
+  --sw-orange: #ff9f45;
+  --sw-gray: #7f8a9e;
+  --sw-radius: 12px;
+  --sw-max: 1400px;
+  --sw-pad: 32px;
+  --sw-shadow: 0 2px 12px rgba(0, 0, 0, 0.45);
+}
+
+/* ------------------------------------------------------------
+   RESET + BASE
+   ------------------------------------------------------------ */
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body.page {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background: var(--sw-black);
+  color: var(--sw-text);
+  font-family: "Segoe UI", system-ui, -apple-system, Arial, Helvetica, sans-serif;
+  line-height: 1.6;
+}
+
+/* Decorative tiled starfield behind the whole page (aria-hidden asset). */
+.page::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background: url("../img/starfield.svg") repeat;
+  background-size: 320px 320px;
+  opacity: 0.5;
+}
+
+img {
+  max-width: 100%;
+}
+
+a {
+  color: var(--sw-blue);
+}
+
+a:hover {
+  color: var(--sw-gold);
+}
+
+/* ------------------------------------------------------------
+   SHARED PRIMITIVES
+   Single definition of the grid width and the card surface.
+   ------------------------------------------------------------ */
+.sw-header-container,
+.page-layout,
+.sw-footer-container {
+  width: 100%;
+  max-width: var(--sw-max);
+  margin: 0 auto;
+  padding: 0 var(--sw-pad);
+}
+
+.navigation-panel,
+.content-panel,
+.sidebar-panel,
+.card,
+.sw-card,
+.timeline-card,
+.link-card {
+  background: var(--sw-panel);
+  border: 1px solid var(--sw-border);
+  border-radius: var(--sw-radius);
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.45);
+}
+
+/* ------------------------------------------------------------
+   ACCESSIBILITY: focus + skip link
+   Focus outlines are NEVER removed.
+   ------------------------------------------------------------ */
+:focus-visible {
+  outline: 3px solid var(--sw-gold);
+  outline-offset: 2px;
+  border-radius: 6px;
+}
+
+.skip-link {
+  position: absolute;
+  top: -999px;
+  left: 8px;
+  z-index: 2000;
+  padding: 12px 20px;
+  background: var(--sw-gold);
+  color: var(--sw-black);
+  border-radius: 0 0 var(--sw-radius) var(--sw-radius);
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.skip-link:focus {
+  top: 0;
+  color: var(--sw-black);
+}
+
+/* ------------------------------------------------------------
+   HEADER
+   ------------------------------------------------------------ */
+.sw-header {
+  position: relative;
+  z-index: 10;
+  /* Solid fill instead of a gradient so automated contrast tools can
+     evaluate the brand text and the music button (WCAG 2.1 AA). */
+  background: #0b1220;
+  border-bottom: 2px solid var(--sw-border);
+}
+
+.sw-header-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  min-height: 80px;
+  padding-top: 10px;
+  padding-bottom: 10px;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.brand-emblem {
+  width: 44px;
+  height: 44px;
+  flex-shrink: 0;
+  filter: drop-shadow(0 0 6px rgba(255, 232, 31, 0.4));
+}
+
+.brand-name {
+  margin: 0;
+  color: var(--sw-gold);
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+.brand-subtitle {
+  display: block;
+  margin-top: 2px;
+  color: var(--sw-muted);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+/* ------------------------------------------------------------
+   MAIN GRID + SIDEBARS
+   ------------------------------------------------------------ */
+.page-layout {
+  flex: 1;
+  display: grid;
+  grid-template-columns: 235px minmax(0, 1fr) 270px;
+  gap: 24px;
+  padding-top: var(--sw-pad);
+  padding-bottom: var(--sw-pad);
+}
+
+.left-sidebar,
+.right-sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  min-width: 0;
+}
+
+.main-content {
+  min-width: 0;
+}
+
+.navigation-panel,
+.sidebar-panel,
+.sw-card,
+.card,
+.timeline-card,
+.link-card {
+  padding: 16px;
+}
+
+.content-panel {
+  min-height: 600px;
+  padding: 24px;
+}
+
+/* ------------------------------------------------------------
+   SIDE NAVIGATION
+   ------------------------------------------------------------ */
+.panel-title {
+  margin: 0 0 16px;
+  color: var(--sw-gold);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.side-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.side-nav a {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 16px;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  color: var(--sw-text);
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.side-nav a:hover {
+  background: var(--sw-panel-2);
+  color: var(--sw-gold);
+}
+
+.side-nav a.active {
+  background: var(--sw-panel-2);
+  border-color: var(--sw-gold);
+  color: var(--sw-gold);
+}
+
+.nav-icon {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* ------------------------------------------------------------
+   TYPOGRAPHY
+   ------------------------------------------------------------ */
+.page-title {
+  margin: 0 0 12px;
+  font-size: 30px;
+  font-weight: 700;
+  color: var(--sw-text);
+}
+
+.page-title--underline {
+  display: inline-block;
+  padding-bottom: 10px;
+  border-bottom: 4px solid var(--sw-gold);
+}
+
+.page-intro {
+  margin: 0 0 24px;
+  color: var(--sw-muted);
+  font-size: 16px;
+}
+
+.section-title {
+  margin: 32px 0 16px;
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--sw-text);
+}
+
+.section-actions {
+  margin: 20px 0 0;
+  text-align: center;
+}
+
+/* Inline code. Bootstrap defaults `code` to #d63384, which only reaches
+   3.58:1-4.05:1 on the dark panels. The Rebel blue reaches 7.17:1 on
+   --sw-panel and 6.34:1 on --sw-panel-2, both >= 4.5:1 (WCAG 2.1 AA). */
+code,
+kbd,
+samp {
+  color: var(--sw-blue);
+  background: rgba(90, 169, 230, 0.12);
+  padding: 0.1em 0.35em;
+  border-radius: 4px;
+}
+
+/* Links inside running text must be distinguishable without colour.
+   Scoped so buttons (.sw-btn) and the stretched card/link-card titles
+   (.link-name a) keep the current design. */
+.content-panel p a:not(.sw-btn),
+.content-panel li a:not(.sw-btn),
+.content-panel td a:not(.sw-btn),
+.content-panel dd a:not(.sw-btn),
+.content-panel figcaption a:not(.sw-btn),
+.content-panel details a:not(.sw-btn),
+.content-panel video a:not(.sw-btn) {
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+/* ------------------------------------------------------------
+   HERO
+   Lightest gradient stop: #143a63 (text 9.94:1, gold 9.26:1).
+   The blue radial glow is a low-opacity decoration only.
+   ------------------------------------------------------------ */
+.sw-hero {
+  margin: 0 0 24px;
+  padding: 40px;
+  border: 1px solid var(--sw-border);
+  border-radius: var(--sw-radius);
+  background-color: #081426;
+  background-image: radial-gradient(
+      120% 120% at 85% 12%,
+      rgba(90, 169, 230, 0.18),
+      rgba(90, 169, 230, 0) 55%
+    ),
+    linear-gradient(135deg, #081426 0%, #143a63 100%);
+  color: var(--sw-text);
+}
+
+.hero-label {
+  display: inline-block;
+  margin-bottom: 12px;
+  color: var(--sw-gold);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+.hero-title {
+  margin: 0 0 12px;
+  font-size: 36px;
+  font-weight: 700;
+  line-height: 1.15;
+}
+
+.hero-text {
+  max-width: 520px;
+  margin: 0 0 24px;
+  font-size: 17px;
+}
+
+.hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+/* ------------------------------------------------------------
+   BUTTONS
+   ------------------------------------------------------------ */
+.sw-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 11px 22px;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.sw-btn.primary {
+  background: var(--sw-gold);
+  color: var(--sw-black);
+}
+
+.sw-btn.primary:hover {
+  background: var(--sw-orange);
+  color: var(--sw-black);
+}
+
+.sw-btn.ghost {
+  background: transparent;
+  border-color: var(--sw-border);
+  color: var(--sw-text);
+}
+
+.sw-btn.ghost:hover {
+  background: var(--sw-panel-2);
+  border-color: var(--sw-gold);
+  color: var(--sw-gold);
+}
+
+.sw-btn.small {
+  padding: 8px 16px;
+  font-size: 13px;
+}
+
+/* ------------------------------------------------------------
+   CARD GRIDS + CARDS
+   ------------------------------------------------------------ */
+.sw-card-grid {
+  display: grid;
+  gap: 20px;
+}
+
+.sw-card-grid--2 {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.sw-card-grid--3 {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.sw-card {
+  display: flex;
+  flex-direction: column;
+}
+
+.card-title {
+  margin: 0 0 8px;
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--sw-text);
+}
+
+.card-body {
+  padding-top: 14px;
+}
+
+.card-text {
+  margin: 0 0 14px;
+  color: var(--sw-muted);
+  font-size: 14px;
+}
+
+.card-link {
+  margin-top: auto;
+  color: var(--sw-gold);
+  font-size: 14px;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.card-link:hover {
+  color: var(--sw-orange);
+  text-decoration: underline;
+}
+
+.card-image {
+  display: block;
+  width: 100%;
+  height: 150px;
+  border-radius: 8px;
+  background: var(--sw-panel-2);
+  object-fit: cover;
+}
+
+/* Card image that hosts faction badges instead of a picture. */
+.card-image--badges {
+  display: flex;
+  flex-wrap: wrap;
+  align-content: center;
+  justify-content: center;
+  gap: 8px;
+  height: auto;
+  min-height: 150px;
+  padding: 12px;
+}
+
+/* Card image that hosts a grid of emblem icons. */
+.card-image--emblems {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  place-items: center;
+  gap: 10px;
+  padding: 12px;
+}
+
+.card-image--emblems img {
+  width: 56px;
+  height: 56px;
+}
+
+/* ------------------------------------------------------------
+   BADGES (factions / types)
+   Dark tinted surface + accent text keeps every pair >= 4.5:1.
+   ------------------------------------------------------------ */
+.sw-badge {
+  display: inline-block;
+  padding: 4px 12px;
+  border: 1px solid currentColor;
+  border-radius: 999px;
+  background: var(--sw-panel-2);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+}
+
+.sw-badge--rebelde,
+.sw-badge--blue {
+  color: var(--sw-blue);
+}
+
+.sw-badge--imperio,
+.sw-badge--red {
+  color: var(--sw-red);
+}
+
+.sw-badge--jedi,
+.sw-badge--green {
+  color: var(--sw-green);
+}
+
+.sw-badge--sith {
+  color: var(--sw-purple);
+}
+
+.sw-badge--mandaloriano {
+  color: var(--sw-orange);
+}
+
+.sw-badge--republica {
+  color: var(--sw-muted);
+}
+
+/* ------------------------------------------------------------
+   RIGHT SIDEBAR WIDGETS
+   ------------------------------------------------------------ */
+.personaje-dia {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  text-align: center;
+}
+
+.personaje-dia-image {
+  width: 100%;
+}
+
+.personaje-dia-image img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.personaje-dia-number {
+  margin: 0;
+  color: var(--sw-gold);
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.personaje-dia-name {
+  margin: 0;
+  color: var(--sw-text);
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.fact-box {
+  padding: 16px;
+  border: 1px solid var(--sw-gold);
+  border-radius: var(--sw-radius);
+  background: var(--sw-panel-2);
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.45);
+}
+
+.fact-title {
+  margin: 0 0 8px;
+  color: var(--sw-gold);
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.fact-text {
+  margin: 0;
+  color: var(--sw-text);
+  font-size: 14px;
+}
+
+.quick-links {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.quick-links a {
+  display: block;
+  padding: 8px 10px;
+  border-radius: 8px;
+  color: var(--sw-blue);
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.quick-links a:hover {
+  background: var(--sw-panel-2);
+  color: var(--sw-gold);
+}
+
+/* ------------------------------------------------------------
+   READ SPEAKER (floating controls)
+   ------------------------------------------------------------ */
+.read-speaker-bar {
+  position: fixed;
+  right: 20px;
+  bottom: 20px;
+  z-index: 1500;
+  display: flex;
+  gap: 8px;
+  padding: 8px;
+  border: 1px solid var(--sw-border);
+  border-radius: 999px;
+  background: var(--sw-panel);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.55);
+}
+
+.read-speaker {
+  background: var(--sw-gold);
+  color: var(--sw-black);
+}
+
+.read-speaker[aria-pressed="true"] {
+  background: var(--sw-orange);
+}
+
+/* ------------------------------------------------------------
+   PLACEHOLDERS
+   ------------------------------------------------------------ */
+.img-placeholder,
+.ad-placeholder,
+.video-placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  min-height: 140px;
+  border: 2px dashed var(--sw-border);
+  border-radius: 8px;
+  background: var(--sw-panel-2);
+  color: var(--sw-muted);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+}
+
+.ad-placeholder--wide {
+  min-height: 120px;
+}
+
+/* ------------------------------------------------------------
+   MEDIA BLOCKS (used by later pages)
+   ------------------------------------------------------------ */
+.video-embed {
+  position: relative;
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  border-radius: var(--sw-radius);
+  background: var(--sw-black);
+}
+
+.video-embed iframe {
+  width: 100%;
+  height: 100%;
+  border: 0;
+}
+
+/* ------------------------------------------------------------
+   FORMS (used by later pages)
+   ------------------------------------------------------------ */
+.filters {
+  margin-bottom: 24px;
+  padding: 16px;
+  border: 1px solid var(--sw-border);
+  border-radius: var(--sw-radius);
+  background: var(--sw-panel-2);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 16px;
+}
+
+.filters-label {
+  display: block;
+  margin-bottom: 6px;
+  color: var(--sw-gold);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.filters-input,
+.filters-select {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid var(--sw-border);
+  border-radius: 8px;
+  background: var(--sw-black);
+  color: var(--sw-text);
+  font-family: inherit;
+  font-size: 14px;
+}
+
+.filters-input:focus,
+.filters-select:focus {
+  border-color: var(--sw-gold);
+}
+
+/* ------------------------------------------------------------
+   TIMELINE + LINK CARDS (used by later pages)
+   ------------------------------------------------------------ */
+.timeline {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.timeline-item {
+  display: grid;
+  grid-template-columns: 120px minmax(0, 1fr);
+  align-items: stretch;
+  gap: 20px;
+}
+
+.timeline-year {
+  margin: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px;
+  border-radius: var(--sw-radius);
+  background: var(--sw-panel-2);
+  border: 1px solid var(--sw-gold);
+  color: var(--sw-gold);
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.timeline-title {
+  margin: 0 0 6px;
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--sw-text);
+}
+
+.timeline-text {
+  margin: 0;
+  color: var(--sw-muted);
+  font-size: 14px;
+}
+
+.link-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+}
+
+.link-logo {
+  width: 48px;
+  height: 48px;
+  flex-shrink: 0;
+  border-radius: var(--sw-radius);
+  background: var(--sw-panel-2);
+  object-fit: contain;
+}
+
+.link-name {
+  margin: 0 0 2px;
+  font-size: 17px;
+  font-weight: 700;
+}
+
+.link-domain {
+  margin: 0 0 6px;
+  color: var(--sw-gold);
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.link-text {
+  margin: 0;
+  color: var(--sw-muted);
+  font-size: 14px;
+}
+
+/* ------------------------------------------------------------
+   FOOTER
+   ------------------------------------------------------------ */
+.sw-footer {
+  margin-top: auto;
+  background: var(--sw-black);
+  border-top: 2px solid var(--sw-border);
+}
+
+.sw-footer-container {
+  padding-top: 20px;
+  padding-bottom: 20px;
+}
+
+.footer-copy {
+  margin: 0;
+  color: var(--sw-text);
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.footer-note {
+  margin: 8px 0 0;
+  color: var(--sw-muted);
+  font-size: 13px;
+}
+
+.footer-links {
+  margin: 12px 0 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  padding: 0;
+  list-style: none;
+}
+
+.footer-links a {
+  color: var(--sw-blue);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.footer-links a:hover {
+  color: var(--sw-gold);
+}
+
+/* Site-wide WCAG badge. */
+.footer-badge {
+  display: inline-block;
+  vertical-align: middle;
+  margin-top: 8px;
+}
+
+/* ------------------------------------------------------------
+   UTILITY
+   ------------------------------------------------------------ */
+.visually-hidden {
+  position: absolute !important;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Keep later-page JS output readable when it injects into the grid */
+.is-hidden {
+  display: none !important;
+}
+
+/* ------------------------------------------------------------
+   REDUCED MOTION — disable heavy animation/transitions
+   ------------------------------------------------------------ */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  .page::before {
+    opacity: 0.35;
+  }
+}
+
+/* ------------------------------------------------------------
+   RESPONSIVE
+   ------------------------------------------------------------ */
+@media (max-width: 1100px) {
+  .page-layout {
+    grid-template-columns: 235px minmax(0, 1fr);
+  }
+
+  .right-sidebar {
+    grid-column: 1 / -1;
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+
+  .right-sidebar > * {
+    flex: 1 1 240px;
+  }
+}
+
+@media (max-width: 820px) {
+  .sw-header-container {
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  .page-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .left-sidebar,
+  .right-sidebar {
+    flex-direction: column;
+  }
+
+  .sw-card-grid--3 {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 560px) {
+  :root {
+    --sw-pad: 16px;
+  }
+
+  .sw-card-grid--2,
+  .sw-card-grid--3 {
+    grid-template-columns: 1fr;
+  }
+
+  .sw-hero {
+    padding: 24px;
+  }
+
+  .hero-title {
+    font-size: 26px;
+  }
+
+  .hero-actions {
+    flex-direction: column;
+  }
+
+  .timeline-item {
+    grid-template-columns: 1fr;
+  }
+
+  .read-speaker-bar {
+    right: 12px;
+    bottom: 12px;
+  }
+}
+
+/* ------------------------------------------------------------
+   CHARACTER EXPLORER (SWAPI data layer)
+   Minimal, scoped additions: async states + cards + dark modal.
+   Every colour maps to an existing design token.
+   ------------------------------------------------------------ */
+.loading,
+.error-msg,
+.mensaje-info {
+  margin: 0;
+  padding: 16px;
+  border-radius: var(--sw-radius);
+  text-align: center;
+  font-size: 15px;
+  font-weight: 600;
+}
+
+/* Async messages are injected as direct children of the CSS grid,
+   so they must span the full row instead of one column. */
+.sw-card-grid > .loading,
+.sw-card-grid > .error-msg,
+.sw-card-grid > .mensaje-info {
+  grid-column: 1 / -1;
+}
+
+.loading {
+  border: 1px dashed var(--sw-border);
+  background: var(--sw-panel-2);
+  color: var(--sw-muted);
+}
+
+.mensaje-info {
+  border: 1px dashed var(--sw-border);
+  background: var(--sw-panel-2);
+  color: var(--sw-muted);
+}
+
+.error-msg {
+  background: var(--sw-panel-2);
+  color: var(--sw-text);
+}
+
+.error-msg::before {
+  content: "Aviso: ";
+  color: var(--sw-red);
+  font-weight: 700;
+}
+
+.error-msg--action {
+  padding-top: 0;
+}
+
+.error-msg--action::before {
+  content: none;
+}
+
+.personaje-card {
+  gap: 10px;
+}
+
+.personaje-card-avatar {
+  display: flex;
+  justify-content: center;
+}
+
+.sw-avatar {
+  display: block;
+  border-radius: 50%;
+  border: 2px solid var(--sw-border);
+}
+
+.sw-badge-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 12px;
+}
+
+.personaje-card .ver-detalles {
+  margin-top: auto;
+  align-self: flex-start;
+}
+
+.results-count {
+  margin: 0 0 16px;
+  color: var(--sw-muted);
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.api-info {
+  margin-top: 32px;
+}
+
+/* Dark theme for the Bootstrap detail modal so text stays readable. */
+#modal-personaje .modal-content {
+  background: var(--sw-panel);
+  border: 1px solid var(--sw-border);
+  color: var(--sw-text);
+}
+
+#modal-personaje .modal-header {
+  border-bottom: 1px solid var(--sw-border);
+}
+
+#modal-personaje .modal-title {
+  color: var(--sw-gold);
+}
+
+#modal-personaje .btn-close {
+  filter: invert(1) grayscale(1) brightness(1.7);
+}
+
+.modal-detalle-cabecera {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.modal-detalle-cabecera .card-title {
+  margin-bottom: 0;
+}
+
+.modal-detail-list {
+  margin: 0;
+  padding-left: 20px;
+  color: var(--sw-text);
+  font-size: 14px;
+}
+
+.modal-subtitle {
+  margin: 16px 0 8px;
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--sw-text);
+}
+
+.modal-film-list {
+  margin: 0;
+  padding-left: 20px;
+  color: var(--sw-muted);
+  font-size: 14px;
+}
+
+/* ------------------------------------------------------------
+   FACCIONES PAGE — saber picker, canvas, video, accordion.
+   Scoped additions; every colour maps to an existing token.
+   ------------------------------------------------------------ */
+.sable-panel {
+  margin-bottom: 24px;
+}
+
+.sable-panel .card-text {
+  max-width: 620px;
+}
+
+.sable-opciones,
+.alineacion-opciones {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.sable-btn {
+  background: transparent;
+  border-color: var(--sw-border);
+  color: var(--sw-text);
+}
+
+.sable-btn:hover {
+  background: var(--sw-panel-2);
+  border-color: var(--sw-gold);
+}
+
+.sable-btn[aria-pressed="true"] {
+  border-color: var(--sw-gold);
+  box-shadow: inset 0 0 0 1px var(--sw-gold);
+}
+
+.sable-swatch {
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.45);
+  border-radius: 50%;
+}
+
+.alineacion-btn[aria-pressed="true"] {
+  border-color: var(--sw-gold);
+  color: var(--sw-gold);
+  background: var(--sw-panel-2);
+}
+
+/* Faction cards: keep the emblem legible inside the fixed card image box. */
+.faccion-emblem {
+  object-fit: contain;
+  background: var(--sw-panel-2);
+  padding: 14px;
+}
+
+/* Bounded canvas container (the canvas itself fills it). */
+.canvas-wrap {
+  position: relative;
+  margin: 0 0 8px;
+  overflow: hidden;
+  border: 1px solid var(--sw-border);
+  border-radius: var(--sw-radius);
+  background: var(--sw-black);
+}
+
+#fondo-estrellas {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+/* Native video block. */
+.sw-video {
+  display: block;
+  width: 100%;
+  max-width: 960px;
+  height: auto;
+  border: 1px solid var(--sw-border);
+  border-radius: var(--sw-radius);
+  background: var(--sw-black);
+}
+
+.video-transcript {
+  margin: 16px 0 8px;
+  color: var(--sw-muted);
+  font-size: 14px;
+}
+
+.video-transcript summary {
+  color: var(--sw-gold);
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.video-transcript p {
+  margin: 8px 0 0;
+}
+
+.video-embed {
+  margin-top: 16px;
+}
+
+/* Back to top button (injected by navegacion.js). */
+.volver-arriba {
+  display: none;
+  position: fixed;
+  right: 20px;
+  bottom: 84px;
+  z-index: 1400;
+  background: var(--sw-panel);
+  border-color: var(--sw-border);
+}
+
+/* Note shown when the browser lacks SpeechSynthesis. */
+.read-speaker-note {
+  position: fixed;
+  left: 20px;
+  bottom: 20px;
+  z-index: 1500;
+  max-width: 340px;
+  margin: 0;
+  padding: 12px 16px;
+  border: 1px solid var(--sw-red);
+  border-radius: var(--sw-radius);
+  background: var(--sw-panel);
+  color: var(--sw-text);
+  font-size: 13px;
+}
+
+/* Mobile navigation toggle + collapsed state. */
+.nav-toggle {
+  display: none;
+  width: 100%;
+  margin-bottom: 12px;
+}
+
+/* Dark theme for the Bootstrap accordion. */
+.sw-accordion {
+  --bs-accordion-bg: var(--sw-panel);
+  --bs-accordion-color: var(--sw-text);
+  --bs-accordion-border-color: var(--sw-border);
+  --bs-accordion-btn-color: var(--sw-text);
+  --bs-accordion-btn-bg: var(--sw-panel);
+  --bs-accordion-active-color: var(--sw-black);
+  --bs-accordion-active-bg: var(--sw-gold);
+  --bs-accordion-btn-focus-box-shadow: 0 0 0 0.2rem rgba(255, 232, 31, 0.35);
+}
+
+.sw-accordion .accordion-button {
+  background: var(--sw-panel);
+  color: var(--sw-text);
+}
+
+.sw-accordion .accordion-button:not(.collapsed) {
+  background: var(--sw-gold);
+  color: var(--sw-black);
+}
+
+.sw-accordion .accordion-button::after {
+  filter: invert(1) grayscale(1) brightness(1.7);
+}
+
+.sw-accordion .accordion-button:not(.collapsed)::after {
+  filter: none;
+}
+
+.sw-accordion .accordion-body {
+  background: var(--sw-panel-2);
+  color: var(--sw-text);
+}
+
+/* "Personaje del día" populated with the generated SVG avatar. */
+.personaje-dia-avatar {
+  display: flex;
+  justify-content: center;
+}
+
+.personaje-dia-link {
+  margin: 4px 0 0;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+@media (max-width: 820px) {
+  .nav-toggle {
+    display: inline-flex;
+  }
+
+  .side-nav.nav-collapsed {
+    display: none;
+  }
+}
+
+/* ------------------------------------------------------------
+   HISTORIA PAGE — intro split + curiosities definition list.
+   Scoped additions; colours map to existing design tokens.
+   ------------------------------------------------------------ */
+.intro-split {
+  display: flex;
+  align-items: flex-start;
+  gap: 24px;
+  margin-bottom: 8px;
+}
+
+.intro-split-text {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.intro-split-media {
+  width: 260px;
+  height: 190px;
+  flex-shrink: 0;
+  border: 1px solid var(--sw-border);
+  border-radius: var(--sw-radius);
+  background: var(--sw-panel-2);
+  object-fit: cover;
+}
+
+.curiosidades,
+.sw-dl {
+  margin: 0;
+  display: grid;
+  gap: 14px;
+}
+
+.curiosidades dt,
+.sw-dl dt {
+  color: var(--sw-gold);
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.curiosidades dd,
+.sw-dl dd {
+  margin: 4px 0 0;
+  color: var(--sw-muted);
+  font-size: 14px;
+}
+
+/* ------------------------------------------------------------
+   STORYBOARD PAGE — accessible dark-theme data table + figure.
+   ------------------------------------------------------------ */
+.sw-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 8px;
+}
+
+.sw-table caption {
+  margin-bottom: 10px;
+  color: var(--sw-muted);
+  font-size: 14px;
+  text-align: left;
+}
+
+.sw-table th,
+.sw-table td {
+  padding: 10px 12px;
+  border: 1px solid var(--sw-border);
+  text-align: left;
+  vertical-align: top;
+  font-size: 14px;
+}
+
+.sw-table th {
+  background: var(--sw-panel-2);
+  color: var(--sw-gold);
+}
+
+.sw-table td {
+  color: var(--sw-text);
+}
+
+.storyboard-figure {
+  margin: 0 0 16px;
+  padding: 16px;
+  border: 1px solid var(--sw-border);
+  border-radius: var(--sw-radius);
+  background: var(--sw-panel-2);
+  overflow-x: auto;
+}
+
+.storyboard-figure figcaption {
+  margin-top: 12px;
+  color: var(--sw-muted);
+  font-size: 14px;
+}
+
+.storyboard-svg {
+  display: block;
+  width: 100%;
+  min-width: 680px;
+  height: auto;
+}
+
+/* ------------------------------------------------------------
+   PRESENTACION PAGE — accessible slide deck.
+   ------------------------------------------------------------ */
+.deck {
+  margin: 0;
+}
+
+.slide {
+  min-height: 320px;
+  padding: 24px;
+  border: 1px solid var(--sw-border);
+  border-radius: var(--sw-radius);
+  background: var(--sw-panel-2);
+}
+
+.slide[hidden] {
+  display: none;
+}
+
+.slide-title {
+  margin: 0 0 12px;
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--sw-gold);
+}
+
+.slide-list {
+  margin: 0;
+  padding-left: 22px;
+  color: var(--sw-text);
+  font-size: 16px;
+}
+
+.slide-list li {
+  margin-bottom: 8px;
+}
+
+.deck-controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 16px;
+  padding: 12px 16px;
+  border: 1px solid var(--sw-border);
+  border-radius: var(--sw-radius);
+  background: var(--sw-panel);
+}
+
+.deck-counter {
+  margin: 0;
+  color: var(--sw-text);
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.deck-buttons {
+  display: flex;
+  gap: 8px;
+}
+
+.sw-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+@media (max-width: 560px) {
+  .intro-split {
+    flex-direction: column;
+  }
+
+  .intro-split-media {
+    width: 100%;
+  }
+
+  .deck-controls {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .deck-buttons {
+    justify-content: space-between;
+  }
+}
+
+/* ------------------------------------------------------------
+   ENLACES PAGE — link body wrapper + wordmark badges.
+   The badges are 160x48 in the source, so they need their own
+   size instead of the default 48x48 .link-logo box.
+   ------------------------------------------------------------ */
+.link-body {
+  min-width: 0;
+}
+
+.link-logo--wordmark {
+  width: 160px;
+  height: 48px;
+}
+
+/* Self-declared WCAG 2.1 AA badge (Accesibilidad page). */
+.certificado-wai {
+  display: block;
+  width: 320px;
+  max-width: 100%;
+  height: auto;
+  margin-bottom: 12px;
+}
+
+@media (max-width: 560px) {
+  .link-card {
+    flex-direction: column;
+  }
+
+  .link-logo--wordmark {
+    width: 100%;
+    max-width: 200px;
+  }
+}

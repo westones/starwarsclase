@@ -1,0 +1,338 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Galaxia Star Wars | Declaración de accesibilidad</title>
+    <meta
+      name="description"
+      content="Declaración de accesibilidad de Galaxia Star Wars: compromiso, estado de conformidad WCAG 2.1 AA, medidas adoptadas, compatibilidad, limitaciones y contacto."
+    />
+    <meta name="theme-color" content="#05070d" />
+    <link rel="icon" href="img/favicon.svg" type="image/svg+xml" />
+
+    <!-- Load order: Bootstrap base, then Tailwind (preflight disabled), then the theme. -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" />
+    <script src="https://cdn.tailwindcss.com/3.4.16"></script>
+    <script>
+      tailwind.config = { corePlugins: { preflight: false } };
+    </script>
+    <link rel="stylesheet" href="css/style.css" />
+  </head>
+  <body class="page">
+    <a class="skip-link" href="#contenido-principal">Saltar al contenido principal</a>
+
+    <audio id="musica-fondo" loop preload="none" aria-label="Música ambiental de la galaxia">
+      <source src="audio/ambient.mp3" type="audio/mpeg" />
+      <track kind="captions" src="audio/ambient.es.vtt" srclang="es" label="Español" />
+      Tu navegador no soporta audio.
+    </audio>
+
+    <!-- Header -->
+    <header class="sw-header" role="banner">
+      <div class="sw-header-container">
+        <div class="brand">
+          <svg class="brand-emblem" viewBox="0 0 64 64" aria-hidden="true" focusable="false">
+            <circle cx="32" cy="32" r="29" fill="#0e1524" stroke="#ffe81f" stroke-width="2" />
+            <path
+              d="M32 7l5 16 16 5-16 5-5 16-5-16-16-5 16-5z"
+              fill="#ffe81f"
+            />
+            <circle cx="32" cy="28" r="3.4" fill="#05070d" />
+          </svg>
+          <div>
+            <span class="brand-name">Galaxia Star Wars</span>
+            <span class="brand-subtitle">Archivo galáctico</span>
+          </div>
+        </div>
+        <button id="music-button" class="sw-btn ghost" type="button" aria-pressed="false">
+          Encender música
+        </button>
+      </div>
+    </header>
+
+    <!-- Page shell: nav | content | widgets -->
+    <div class="page-layout">
+      <!-- Left sidebar -->
+      <aside class="left-sidebar" aria-label="Navegación principal">
+        <div class="navigation-panel">
+          <h2 class="panel-title">Navegación</h2>
+          <nav class="side-nav" aria-label="Secciones del sitio">
+            <a href="index.html">
+              <svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                <path d="M3 9.5 12 3l9 6.5V20a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z" />
+              </svg>
+              Inicio
+            </a>
+            <a href="personajes.html">
+              <svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                <circle cx="9" cy="8" r="3.2" />
+                <path d="M3 20a6 6 0 0 1 12 0" />
+                <path d="M16 11a3 3 0 0 0 0-6" />
+                <path d="M21 20a6 6 0 0 0-5-5.9" />
+              </svg>
+              Personajes
+            </a>
+            <a href="facciones.html">
+              <svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                <path d="M12 3l8 3v6c0 5-3.4 8-8 9-4.6-1-8-4-8-9V6z" />
+              </svg>
+              Facciones
+            </a>
+            <a href="historia.html">
+              <svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                <circle cx="12" cy="12" r="9" />
+                <path d="M12 7v5.2l3.4 2" />
+              </svg>
+              Historia
+            </a>
+            <a href="enlaces.html">
+              <svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71" />
+                <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71" />
+              </svg>
+              Enlaces
+            </a>
+            <a href="accesibilidad.html" class="active" aria-current="page">
+              <svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                <circle cx="12" cy="5" r="2" />
+                <path d="M12 8v6" />
+                <path d="M5 10l7 1 7-1" />
+                <path d="M12 14l-3 7" />
+                <path d="M12 14l3 7" />
+              </svg>
+              Accesibilidad
+            </a>
+          </nav>
+        </div>
+      </aside>
+
+      <!-- Main content -->
+      <main class="main-content" id="contenido-principal" tabindex="-1">
+        <section class="content-panel" aria-labelledby="titulo-accesibilidad">
+          <p class="panel-title">Contenido principal</p>
+
+          <h1 class="page-title page-title--underline" id="titulo-accesibilidad">
+            Declaración de accesibilidad
+          </h1>
+          <p class="page-intro">
+            Esta declaración describe el compromiso de accesibilidad de Galaxia Star Wars, el
+            estado de conformidad con las Pautas de Accesibilidad para el Contenido Web (WCAG)
+            2.1 en su nivel AA, las medidas adoptadas y las limitaciones conocidas.
+          </p>
+
+          <!-- Compromiso -->
+          <h2 class="section-title">Compromiso</h2>
+          <p class="page-intro">
+            El equipo mantiene este sitio de forma voluntaria y trabaja para que todas las
+            personas puedan usar sus contenidos, con independencia de sus capacidades o de la
+            tecnología de asistencia que utilicen. El objetivo declarado es cumplir el nivel AA
+            de WCAG 2.1 (WAI-AA).
+          </p>
+
+          <!-- Estado de conformidad -->
+          <h2 class="section-title">Estado de conformidad</h2>
+          <dl class="sw-dl">
+            <dt>Nivel objetivo</dt>
+            <dd>WCAG 2.1, nivel AA (WAI-AA).</dd>
+
+            <dt>Estado declarado</dt>
+            <dd>Totalmente conforme con WCAG 2.1 AA.</dd>
+
+            <dt>Método</dt>
+            <dd>
+              Autoevaluación realizada por el propio equipo, con herramientas automáticas y
+              revisión manual. No se trata de una auditoría de terceros.
+            </dd>
+
+            <dt>Fecha</dt>
+            <dd>2026.</dd>
+          </dl>
+
+          <!-- Medidas adoptadas -->
+          <h2 class="section-title">Medidas adoptadas</h2>
+          <ul class="slide-list">
+            <li>HTML5 semántico con puntos de referencia (header, nav, main, aside, footer).</li>
+            <li>Texto alternativo significativo en imágenes y diagramas; decorativos con <code>alt=""</code>.</li>
+            <li>Contraste de color suficiente sobre el tema oscuro del sitio.</li>
+            <li>Navegación completa por teclado, con orden de tabulación coherente.</li>
+            <li>Foco visible: nunca se eliminan los contornos de foco.</li>
+            <li>Enlace de salto al contenido principal en la primera posición del teclado.</li>
+            <li>Regiones <code>aria-live</code> para anunciar cambios de estado.</li>
+            <li>Lector de voz integrado (Web Speech API) con control de inicio, pausa y parada.</li>
+            <li>Subtítulos en el vídeo propio y transcripción en texto.</li>
+            <li>Respeto de <code>prefers-reduced-motion</code> para reducir animaciones.</li>
+          </ul>
+
+          <!-- Compatibilidad -->
+          <h2 class="section-title">Compatibilidad</h2>
+          <dl class="sw-dl">
+            <dt>Navegadores</dt>
+            <dd>Chrome, Firefox, Edge y Safari en sus versiones recientes.</dd>
+
+            <dt>Tecnologías de asistencia</dt>
+            <dd>Lectores de pantalla como NVDA, JAWS y VoiceOver.</dd>
+
+            <dt>Tecnologías usadas</dt>
+            <dd>HTML5, WAI-ARIA, CSS, Bootstrap, Tailwind y jQuery.</dd>
+          </dl>
+
+          <!-- Limitaciones conocidas -->
+          <h2 class="section-title">Limitaciones conocidas</h2>
+          <ul class="slide-list">
+            <li>
+              Los subtítulos del vídeo incrustado de YouTube dependen de la propia plataforma y
+              de su disponibilidad.
+            </li>
+            <li>
+              Los subtítulos en formato VTT del vídeo propio requieren servirse por HTTP; con
+              <code>file://</code> el navegador puede no cargarlos.
+            </li>
+            <li>
+              La sección Personajes depende de una API externa (SWAPI); si no responde, se
+              muestra un aviso y el resto del sitio sigue disponible.
+            </li>
+            <li>
+              La lectura en voz alta necesita una voz instalada en el sistema: sin ella el
+              navegador no puede sintetizar audio. Si no hay voces, el lector intenta un
+              respaldo por internet que los navegadores modernos suelen bloquear. Para
+              activarla, instala <code>speech-dispatcher</code> y <code>espeak-ng</code>, y
+              arranca Chromium con <code>--enable-speech-dispatcher</code>.
+            </li>
+          </ul>
+
+          <!-- Evaluación -->
+          <h2 class="section-title">Evaluación</h2>
+          <p class="page-intro">
+            La evaluación combina herramientas automáticas (pa11y y el análisis de axe/
+            Lighthouse), una revisión manual de la estructura y el contraste, y pruebas con el
+            lector de voz integrado.
+          </p>
+          <ul class="slide-list">
+            <li>
+              <a href="docs/informe-accesibilidad-antes.md">Informe de accesibilidad: estado inicial (antes)</a>
+            </li>
+            <li>
+              <a href="docs/informe-accesibilidad-despues.md">Informe de accesibilidad: estado final (después)</a>
+            </li>
+          </ul>
+
+          <!-- Comentarios y contacto -->
+          <h2 class="section-title">Comentarios y contacto</h2>
+          <p class="page-intro">
+            Si encuentras una barrera de accesibilidad, puedes escribir al equipo del proyecto
+            en <a href="mailto:equipo.galaxia@example.com">equipo.galaxia@example.com</a>. Es una
+            dirección de ejemplo sin datos personales; el equipo revisa los mensajes durante el
+            desarrollo del trabajo de clase.
+          </p>
+
+          <!-- Certificación -->
+          <h2 class="section-title">Certificación</h2>
+          <img
+            class="certificado-wai"
+            src="img/certificado-wai-aa.svg"
+            width="320"
+            height="120"
+            alt="Distintivo de conformidad declarada con WCAG 2.1 nivel AA."
+          />
+          <p class="page-intro">
+            Este distintivo es una declaración propia del equipo que indica el nivel de
+            conformidad declarado (WCAG 2.1 AA). No es una certificación emitida por un tercero
+            ni el resultado de una auditoría externa.
+          </p>
+
+          <!-- Licencia -->
+          <h2 class="section-title">Licencia</h2>
+          <dl class="sw-dl">
+            <dt>Código</dt>
+            <dd>
+              Publicado bajo la licencia GNU GPL v3.0. Consulta
+              <a href="LICENSE">LICENSE</a> y <a href="NOTICE">NOTICE</a>.
+            </dd>
+
+            <dt>Marca</dt>
+            <dd>
+              Star Wars y todos los nombres relacionados son marcas de Disney/Lucasfilm; este
+              sitio es un trabajo educativo sin ánimo de lucro y no está afiliado a ellos.
+            </dd>
+          </dl>
+
+          <!-- Última revisión -->
+          <h2 class="section-title">Fecha de la última revisión</h2>
+          <p class="page-intro">2026.</p>
+        </section>
+      </main>
+
+      <!-- Right sidebar -->
+      <aside class="right-sidebar" aria-label="Panel lateral">
+        <div class="sidebar-panel">
+          <h2 class="panel-title">Personaje del día</h2>
+          <div class="personaje-dia" id="personaje-dia">
+            <div class="img-placeholder personaje-dia-image">
+              <span>Imagen</span>
+            </div>
+            <p class="personaje-dia-number">#???</p>
+            <p class="personaje-dia-name">¿Quién será hoy?</p>
+          </div>
+        </div>
+
+        <div class="fact-box">
+          <p class="fact-title">Dato galáctico</p>
+          <p class="fact-text">
+            La Vía Láctea que conocemos está inspirada en una galaxia espiral, igual que
+            muchas de las que aparecen en la saga.
+          </p>
+        </div>
+
+        <div class="sidebar-panel">
+          <h2 class="panel-title">Enlaces rápidos</h2>
+          <ul class="quick-links">
+            <li><a href="personajes.html">Personajes destacados</a></li>
+            <li><a href="facciones.html">Comparar facciones</a></li>
+            <li><a href="historia.html">Línea temporal</a></li>
+            <li><a href="accesibilidad.html">Declaración de accesibilidad</a></li>
+          </ul>
+        </div>
+      </aside>
+    </div>
+
+    <!-- Read speaker -->
+    <div class="read-speaker-bar" role="group" aria-label="Controles de lectura en voz alta">
+      <button id="btn-leer" class="sw-btn read-speaker" type="button" aria-pressed="false">
+        Leer página
+      </button>
+      <button id="btn-detener-lectura" class="sw-btn ghost" type="button">Detener</button>
+    </div>
+
+    <!-- Footer -->
+    <footer class="sw-footer" role="contentinfo">
+      <div class="sw-footer-container">
+        <p class="footer-copy">
+          © 2026 Equipo Galaxia · Proyecto de clase sin ánimo de lucro
+        </p>
+        <ul class="footer-links">
+          <li><a href="accesibilidad.html">Accesibilidad</a></li>
+          <li><a href="LICENSE">Licencia GNU GPL v3.0</a></li>
+        </ul>
+        <a class="footer-badge" href="accesibilidad.html">
+          <img src="img/certificado-wai-aa.svg" alt="Conformidad declarada con WCAG 2.1 AA" width="120" height="45" />
+        </a>
+        <p class="footer-note">
+          Star Wars y todos los nombres y personajes relacionados son marcas registradas de
+          Disney/Lucasfilm. Este sitio es un trabajo educativo sin ánimo de lucro y no está
+          afiliado ni respaldado por Disney/Lucasfilm.
+        </p>
+        <p class="footer-note">Código bajo licencia GNU GPL v3.0.</p>
+      </div>
+    </footer>
+
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="js/api.js"></script>
+    <script src="js/dom.js"></script>
+    <script src="js/script.js"></script>
+    <script src="js/canvas.js"></script>
+    <script src="js/lector.js"></script>
+    <script src="js/navegacion.js"></script>
+  </body>
+</html>
